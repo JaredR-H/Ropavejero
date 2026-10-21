@@ -1,0 +1,624 @@
+fileFormatVersion: 2
+guid: cc3f8707a6f567f48b2ad494b0263d29
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2036140999580302359
+    second: DUG BLANCO_0
+  - first:
+      213: 7317577595577971808
+    second: DUG BLANCO_1
+  - first:
+      213: 3606906031857129139
+    second: DUG BLANCO_2
+  - first:
+      213: -4570384809480310690
+    second: DUG BLANCO_3
+  - first:
+      213: -1950311795401573123
+    second: DUG BLANCO_4
+  - first:
+      213: 7788023127944794138
+    second: DUG BLANCO_5
+  - first:
+      213: -1515966471267556213
+    second: DUG BLANCO_6
+  - first:
+      213: 2908199345761262878
+    second: DUG BLANCO_7
+  - first:
+      213: -3270399544472844750
+    second: DUG BLANCO_8
+  - first:
+      213: 4001179853859443533
+    second: DUG BLANCO_9
+  - first:
+      213: 7428887109184631210
+    second: DUG BLANCO_10
+  - first:
+      213: 5768334712142694545
+    second: DUG BLANCO_11
+  - first:
+      213: -6466789297890960528
+    second: DUG BLANCO_12
+  - first:
+      213: -6160367428299658539
+    second: DUG BLANCO_13
+  - first:
+      213: 8404162972731957601
+    second: DUG BLANCO_14
+  - first:
+      213: -909293311150606642
+    second: DUG BLANCO_15
+  - first:
+      213: 7423065054447334820
+    second: DUG BLANCO_16
+  - first:
+      213: 941424249732480387
+    second: DUG BLANCO_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DUG BLANCO_0
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 157
+        width: 1454
+        height: 1327
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e3486f7c8c2eb3e0800000000000000
+      internalID: -2036140999580302359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_1
+      rect:
+        serializedVersion: 2
+        x: 1915
+        y: 1008
+        width: 252
+        height: 486
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06438c09d024d8560800000000000000
+      internalID: 7317577595577971808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_2
+      rect:
+        serializedVersion: 2
+        x: 2219
+        y: 1016
+        width: 328
+        height: 477
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b6de0ffced4e0230800000000000000
+      internalID: 3606906031857129139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_3
+      rect:
+        serializedVersion: 2
+        x: 2563
+        y: 1008
+        width: 222
+        height: 464
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e50b5101b3bb290c0800000000000000
+      internalID: -4570384809480310690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_4
+      rect:
+        serializedVersion: 2
+        x: 2837
+        y: 998
+        width: 310
+        height: 486
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfcb5d951c91fe4e0800000000000000
+      internalID: -1950311795401573123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_5
+      rect:
+        serializedVersion: 2
+        x: 3161
+        y: 1008
+        width: 430
+        height: 472
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a101daba5cd941c60800000000000000
+      internalID: 7788023127944794138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_6
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 230
+        width: 493
+        height: 374
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b84e1bcb68436fae0800000000000000
+      internalID: -1515966471267556213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_7
+      rect:
+        serializedVersion: 2
+        x: 1857
+        y: 433
+        width: 293
+        height: 477
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1d9f1c85effb5820800000000000000
+      internalID: 2908199345761262878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_8
+      rect:
+        serializedVersion: 2
+        x: 2202
+        y: 433
+        width: 355
+        height: 478
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 236c81e01f43d92d0800000000000000
+      internalID: -3270399544472844750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_9
+      rect:
+        serializedVersion: 2
+        x: 2609
+        y: 442
+        width: 115
+        height: 464
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d43ddbfb0eb078730800000000000000
+      internalID: 4001179853859443533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_10
+      rect:
+        serializedVersion: 2
+        x: 2775
+        y: 399
+        width: 282
+        height: 488
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa1bd634775b81760800000000000000
+      internalID: 7428887109184631210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_11
+      rect:
+        serializedVersion: 2
+        x: 3083
+        y: 433
+        width: 293
+        height: 477
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19802d6dbdd3d0050800000000000000
+      internalID: 5768334712142694545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_12
+      rect:
+        serializedVersion: 2
+        x: 3428
+        y: 433
+        width: 222
+        height: 464
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07b59e565695146a0800000000000000
+      internalID: -6466789297890960528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_13
+      rect:
+        serializedVersion: 2
+        x: 2079
+        y: 167
+        width: 101
+        height: 168
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5daef46867af18aa0800000000000000
+      internalID: -6160367428299658539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_14
+      rect:
+        serializedVersion: 2
+        x: 2362
+        y: 195
+        width: 96
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 161ed2052b591a470800000000000000
+      internalID: 8404162972731957601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_15
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 200
+        width: 166
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec6ba381d8a8163f0800000000000000
+      internalID: -909293311150606642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_16
+      rect:
+        serializedVersion: 2
+        x: 2988
+        y: 200
+        width: 102
+        height: 131
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a5f2f28656040760800000000000000
+      internalID: 7423065054447334820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUG BLANCO_17
+      rect:
+        serializedVersion: 2
+        x: 3272
+        y: 203
+        width: 73
+        height: 134
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38d3e340e5c901d00800000000000000
+      internalID: 941424249732480387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      DUG BLANCO_0: -2036140999580302359
+      DUG BLANCO_1: 7317577595577971808
+      DUG BLANCO_10: 7428887109184631210
+      DUG BLANCO_11: 5768334712142694545
+      DUG BLANCO_12: -6466789297890960528
+      DUG BLANCO_13: -6160367428299658539
+      DUG BLANCO_14: 8404162972731957601
+      DUG BLANCO_15: -909293311150606642
+      DUG BLANCO_16: 7423065054447334820
+      DUG BLANCO_17: 941424249732480387
+      DUG BLANCO_2: 3606906031857129139
+      DUG BLANCO_3: -4570384809480310690
+      DUG BLANCO_4: -1950311795401573123
+      DUG BLANCO_5: 7788023127944794138
+      DUG BLANCO_6: -1515966471267556213
+      DUG BLANCO_7: 2908199345761262878
+      DUG BLANCO_8: -3270399544472844750
+      DUG BLANCO_9: 4001179853859443533
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,806 @@
+fileFormatVersion: 2
+guid: 6a1f8aa971b8ec046beece6c25e2b2ae
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1457971479463455240
+    second: muerte humo0004_0
+  - first:
+      213: 8090281129558574494
+    second: muerte humo0004_1
+  - first:
+      213: -7804053861315324012
+    second: muerte humo0004_2
+  - first:
+      213: -6419674754431772867
+    second: muerte humo0004_3
+  - first:
+      213: 7152148440819731440
+    second: muerte humo0004_4
+  - first:
+      213: 3253030127877254169
+    second: muerte humo0004_5
+  - first:
+      213: -2191527638281800882
+    second: muerte humo0004_6
+  - first:
+      213: -2185913954004210275
+    second: muerte humo0004_7
+  - first:
+      213: -7147512287690627481
+    second: muerte humo0004_8
+  - first:
+      213: -7548381786877710325
+    second: muerte humo0004_9
+  - first:
+      213: -4241845756220345174
+    second: muerte humo0004_10
+  - first:
+      213: -3266051284937221094
+    second: muerte humo0004_11
+  - first:
+      213: 8641503691544632985
+    second: muerte humo0004_12
+  - first:
+      213: 4696384970992272432
+    second: muerte humo0004_13
+  - first:
+      213: -5371758159764053990
+    second: muerte humo0004_14
+  - first:
+      213: 429972334480624256
+    second: muerte humo0004_15
+  - first:
+      213: -993731453808218394
+    second: muerte humo0004_16
+  - first:
+      213: -4205189221144368281
+    second: muerte humo0004_17
+  - first:
+      213: 7986637037679801505
+    second: muerte humo0004_18
+  - first:
+      213: -3913543712676069951
+    second: muerte humo0004_19
+  - first:
+      213: 7467272997380659532
+    second: muerte humo0004_20
+  - first:
+      213: 5693279084926515233
+    second: muerte humo0004_21
+  - first:
+      213: -8261597196631350790
+    second: muerte humo0004_22
+  - first:
+      213: 2456796333720988044
+    second: muerte humo0004_23
+  - first:
+      213: -5703104421837869010
+    second: muerte humo0004_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: muerte humo0004_0
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 462
+        width: 380
+        height: 473
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80ae11ef551cb3410800000000000000
+      internalID: 1457971479463455240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_1
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 817
+        width: 19
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e95826cb2d3764070800000000000000
+      internalID: 8090281129558574494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_2
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 773
+        width: 19
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 497d84c5c5e62b390800000000000000
+      internalID: -7804053861315324012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_3
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 736
+        width: 11
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d371d80e2dbb8e6a0800000000000000
+      internalID: -6419674754431772867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_4
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 711
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0fb8cebfc19814360800000000000000
+      internalID: 7152148440819731440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_5
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 679
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91c64cf7aa5152d20800000000000000
+      internalID: 3253030127877254169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_6
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 660
+        width: 16
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4333c469312691e0800000000000000
+      internalID: -2191527638281800882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_7
+      rect:
+        serializedVersion: 2
+        x: 414
+        y: 655
+        width: 34
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9d620e17d21aa1e0800000000000000
+      internalID: -2185913954004210275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_8
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 634
+        width: 39
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 766e578817feecc90800000000000000
+      internalID: -7147512287690627481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_9
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 612
+        width: 25
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b00302402c2ce3790800000000000000
+      internalID: -7548381786877710325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_10
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 601
+        width: 64
+        height: 58
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa4fc7c42cfe125c0800000000000000
+      internalID: -4241845756220345174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_11
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 461
+        width: 195
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1cdb1f19a7aca2d0800000000000000
+      internalID: -3266051284937221094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_12
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 612
+        width: 17
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99e9eb3a2d9cce770800000000000000
+      internalID: 8641503691544632985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_13
+      rect:
+        serializedVersion: 2
+        x: 534
+        y: 591
+        width: 25
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0344a74af39ec2140800000000000000
+      internalID: 4696384970992272432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_14
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 579
+        width: 22
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1025fb1a6ea375b0800000000000000
+      internalID: -5371758159764053990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_15
+      rect:
+        serializedVersion: 2
+        x: 433
+        y: 522
+        width: 44
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08a86f36f8197f500800000000000000
+      internalID: 429972334480624256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_16
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 593
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6eee0adf18e8532f0800000000000000
+      internalID: -993731453808218394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_17
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 567
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76b6364feaa24a5c0800000000000000
+      internalID: -4205189221144368281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_18
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 557
+        width: 13
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a4f1ec121c36de60800000000000000
+      internalID: 7986637037679801505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_19
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 493
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cdbaf86abc40b9c0800000000000000
+      internalID: -3913543712676069951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_20
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 501
+        width: 84
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c499db15a3511a760800000000000000
+      internalID: 7467272997380659532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_21
+      rect:
+        serializedVersion: 2
+        x: 378
+        y: 487
+        width: 50
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 128b438d927920f40800000000000000
+      internalID: 5693279084926515233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_22
+      rect:
+        serializedVersion: 2
+        x: 503
+        y: 487
+        width: 30
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af1ec691f19e85d80800000000000000
+      internalID: -8261597196631350790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_23
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 473
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c89ebe4bf3b481220800000000000000
+      internalID: 2456796333720988044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muerte humo0004_24
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 474
+        width: 28
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e20f463aeb08ad0b0800000000000000
+      internalID: -5703104421837869010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: b8c1af13becc7e543a0045268e3cf4c6
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      muerte humo0004_0: 1457971479463455240
+      muerte humo0004_1: 8090281129558574494
+      muerte humo0004_10: -4241845756220345174
+      muerte humo0004_11: -3266051284937221094
+      muerte humo0004_12: 8641503691544632985
+      muerte humo0004_13: 4696384970992272432
+      muerte humo0004_14: -5371758159764053990
+      muerte humo0004_15: 429972334480624256
+      muerte humo0004_16: -993731453808218394
+      muerte humo0004_17: -4205189221144368281
+      muerte humo0004_18: 7986637037679801505
+      muerte humo0004_19: -3913543712676069951
+      muerte humo0004_2: -7804053861315324012
+      muerte humo0004_20: 7467272997380659532
+      muerte humo0004_21: 5693279084926515233
+      muerte humo0004_22: -8261597196631350790
+      muerte humo0004_23: 2456796333720988044
+      muerte humo0004_24: -5703104421837869010
+      muerte humo0004_3: -6419674754431772867
+      muerte humo0004_4: 7152148440819731440
+      muerte humo0004_5: 3253030127877254169
+      muerte humo0004_6: -2191527638281800882
+      muerte humo0004_7: -2185913954004210275
+      muerte humo0004_8: -7147512287690627481
+      muerte humo0004_9: -7548381786877710325
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

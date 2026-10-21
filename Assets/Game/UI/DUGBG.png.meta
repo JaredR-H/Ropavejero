@@ -1,0 +1,624 @@
+fileFormatVersion: 2
+guid: 8ca023b9f8d25dc49b547d4de0545807
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -109262475511384887
+    second: DUGBG_0
+  - first:
+      213: -1343582408515458646
+    second: DUGBG_1
+  - first:
+      213: 324171228731329127
+    second: DUGBG_2
+  - first:
+      213: -3403100591057949406
+    second: DUGBG_3
+  - first:
+      213: -5669472322911761104
+    second: DUGBG_4
+  - first:
+      213: 7671258387552428284
+    second: DUGBG_5
+  - first:
+      213: 8562347149825251751
+    second: DUGBG_6
+  - first:
+      213: 9211488591573552391
+    second: DUGBG_7
+  - first:
+      213: -5190675941242156437
+    second: DUGBG_8
+  - first:
+      213: 8694440986188857033
+    second: DUGBG_9
+  - first:
+      213: -5730327662387669426
+    second: DUGBG_10
+  - first:
+      213: -1543773372793552139
+    second: DUGBG_11
+  - first:
+      213: -3980816071763855230
+    second: DUGBG_12
+  - first:
+      213: 4574148733320296099
+    second: DUGBG_13
+  - first:
+      213: -790857692934540558
+    second: DUGBG_14
+  - first:
+      213: 5361726506604535828
+    second: DUGBG_15
+  - first:
+      213: -2738410828398023191
+    second: DUGBG_16
+  - first:
+      213: 2948444902174876107
+    second: DUGBG_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DUGBG_0
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 157
+        width: 1454
+        height: 1327
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c43ddf7b52db7ef0800000000000000
+      internalID: -109262475511384887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_1
+      rect:
+        serializedVersion: 2
+        x: 1915
+        y: 1008
+        width: 252
+        height: 486
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa9e8f50be2aa5de0800000000000000
+      internalID: -1343582408515458646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_2
+      rect:
+        serializedVersion: 2
+        x: 2219
+        y: 1016
+        width: 328
+        height: 477
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76acee6d300bf7400800000000000000
+      internalID: 324171228731329127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_3
+      rect:
+        serializedVersion: 2
+        x: 2563
+        y: 1008
+        width: 222
+        height: 464
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22da117fa02c5c0d0800000000000000
+      internalID: -3403100591057949406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_4
+      rect:
+        serializedVersion: 2
+        x: 2837
+        y: 998
+        width: 310
+        height: 486
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03d8fe0e5fcf151b0800000000000000
+      internalID: -5669472322911761104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_5
+      rect:
+        serializedVersion: 2
+        x: 3161
+        y: 1008
+        width: 430
+        height: 472
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf06c420cd8c57a60800000000000000
+      internalID: 7671258387552428284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_6
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 230
+        width: 493
+        height: 374
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a999e41e5193d670800000000000000
+      internalID: 8562347149825251751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_7
+      rect:
+        serializedVersion: 2
+        x: 1857
+        y: 433
+        width: 293
+        height: 477
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70d0e49c118c5df70800000000000000
+      internalID: 9211488591573552391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_8
+      rect:
+        serializedVersion: 2
+        x: 2202
+        y: 433
+        width: 355
+        height: 478
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6a481a9bb307f7b0800000000000000
+      internalID: -5190675941242156437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_9
+      rect:
+        serializedVersion: 2
+        x: 2609
+        y: 442
+        width: 115
+        height: 464
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ce3266030cd8a870800000000000000
+      internalID: 8694440986188857033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_10
+      rect:
+        serializedVersion: 2
+        x: 2775
+        y: 399
+        width: 282
+        height: 488
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e46d9c40a59c970b0800000000000000
+      internalID: -5730327662387669426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_11
+      rect:
+        serializedVersion: 2
+        x: 3083
+        y: 433
+        width: 293
+        height: 477
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f20fe4fb4a639ae0800000000000000
+      internalID: -1543773372793552139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_12
+      rect:
+        serializedVersion: 2
+        x: 3428
+        y: 433
+        width: 222
+        height: 464
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 288795ebfdc41c8c0800000000000000
+      internalID: -3980816071763855230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_13
+      rect:
+        serializedVersion: 2
+        x: 2079
+        y: 167
+        width: 101
+        height: 168
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a6fb5fb904aa7f30800000000000000
+      internalID: 4574148733320296099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_14
+      rect:
+        serializedVersion: 2
+        x: 2362
+        y: 195
+        width: 96
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f270c05e1f4605f0800000000000000
+      internalID: -790857692934540558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_15
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 200
+        width: 166
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 410a5f0a9dda86a40800000000000000
+      internalID: 5361726506604535828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_16
+      rect:
+        serializedVersion: 2
+        x: 2988
+        y: 200
+        width: 102
+        height: 131
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9eda04c3cd53ff9d0800000000000000
+      internalID: -2738410828398023191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DUGBG_17
+      rect:
+        serializedVersion: 2
+        x: 3272
+        y: 203
+        width: 73
+        height: 134
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc1e1f9540bfae820800000000000000
+      internalID: 2948444902174876107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      DUGBG_0: -109262475511384887
+      DUGBG_1: -1343582408515458646
+      DUGBG_10: -5730327662387669426
+      DUGBG_11: -1543773372793552139
+      DUGBG_12: -3980816071763855230
+      DUGBG_13: 4574148733320296099
+      DUGBG_14: -790857692934540558
+      DUGBG_15: 5361726506604535828
+      DUGBG_16: -2738410828398023191
+      DUGBG_17: 2948444902174876107
+      DUGBG_2: 324171228731329127
+      DUGBG_3: -3403100591057949406
+      DUGBG_4: -5669472322911761104
+      DUGBG_5: 7671258387552428284
+      DUGBG_6: 8562347149825251751
+      DUGBG_7: 9211488591573552391
+      DUGBG_8: -5190675941242156437
+      DUGBG_9: 8694440986188857033
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
