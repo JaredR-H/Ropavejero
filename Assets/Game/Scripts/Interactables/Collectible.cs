@@ -1,7 +1,5 @@
 using UnityEngine;
 
-/// Objeto de la sala. Se recoge solo acercándose (trigger). Flota suavemente.
-/// Collider: CircleCollider2D con Is Trigger y radio ~0.5. Debe estar DENTRO del objeto Room_X.
 public class Collectible : MonoBehaviour, IResettable
 {
     [SerializeField] float bobHeight = 0.12f;
@@ -11,13 +9,14 @@ public class Collectible : MonoBehaviour, IResettable
     Room room;
 
     public bool Collected { get; private set; }
+    public bool Banked { get; private set; }
 
     void Awake()
     {
         startLocalPos = transform.localPosition;
         room = GetComponentInParent<Room>();
         if (room == null)
-            Debug.LogWarning("Collectible '" + name + "' no está dentro de ningún Room: no abrirá ninguna puerta.", this);
+            Debug.LogWarning("Collectible '" + name + "' no esta dentro de ningun Room: no abrira ninguna puerta.", this);
     }
 
     void Update()
@@ -36,15 +35,16 @@ public class Collectible : MonoBehaviour, IResettable
         if (room != null) room.OnCollectibleTaken();
     }
 
-    /// Lo usa la fase de escape: el objeto ya se recogió antes, así que no vuelve a aparecer.
-    public void MarkCollectedSilently()
+    /// Guarda el objeto como recogido de forma permanente (lo llama Room al salir con vida).
+    public void Bank()
     {
-        Collected = true;
-        gameObject.SetActive(false);
+        if (Collected) Banked = true;
     }
 
     public void ResetState()
     {
+        if (Banked) return;     // ya esta guardado: se queda recogido
+
         Collected = false;
         transform.localPosition = startLocalPos;
         gameObject.SetActive(true);
