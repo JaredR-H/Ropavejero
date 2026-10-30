@@ -2,22 +2,24 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// Golpe con la rama. Controles: J o clic izquierdo.
-/// Activa un hitbox (hijo "AttackHitbox") delante del jugador durante un instante.
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] AttackHitbox hitbox;
-    [SerializeField] float hitboxDistance = 0.7f;                         // qué tan lejos del jugador aparece
-    [SerializeField] Vector2 hitboxCenterOffset = new Vector2(0f, 0.4f);  // altura de la "mano"
+    [Tooltip("Que tan lejos de la mano aparece el hitbox, en la direccion del mouse.")]
+    [SerializeField] float hitboxDistance = 0.9f;
+    [Tooltip("Solo si no hay PlayerAim: altura de la mano.")]
+    [SerializeField] Vector2 fallbackCenterOffset = new Vector2(0f, 0.4f);
     [SerializeField] float windUp = 0.05f;
     [SerializeField] float activeTime = 0.15f;
     [SerializeField] float cooldown = 0.25f;
     [SerializeField] float moveSpeedWhileAttacking = 0.4f;
-    [SerializeField] private SlashEffect slashEffect;
+    [SerializeField] SlashEffect slashEffect;
+    [SerializeField] WeaponVisual weapon;
 
     PlayerController controller;
     PlayerAnimator playerAnimator;
+    PlayerAim aim;
     bool attacking;
     float nextAttackTime;
     Coroutine routine;
@@ -26,12 +28,13 @@ public class PlayerAttack : MonoBehaviour
     {
         controller = GetComponent<PlayerController>();
         playerAnimator = GetComponent<PlayerAnimator>();
+        aim = GetComponent<PlayerAim>();
         if (hitbox != null) hitbox.gameObject.SetActive(false);
     }
 
     void Update()
     {
-        if (!controller.InputEnabled || attacking || controller.IsAirborne) return;
+        if (!controller.InputEnabled || attacking || controller.IsAirborne || controller.IsDashing) return;
         if (Time.time < nextAttackTime) return;
 
         var kb = Keyboard.current;
@@ -46,13 +49,20 @@ public class PlayerAttack : MonoBehaviour
     {
         attacking = true;
         controller.SpeedMultiplier = moveSpeedWhileAttacking;
-        hitbox.transform.localPosition = hitboxCenterOffset + controller.FacingVector * hitboxDistance;
+
+        Vector2 dir = aim != null ? aim.Direction : controller.FacingVector;
+        Vector2 origin = aim != null ? aim.Origin : (Vector2)transform.position + fallbackCenterOffset;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        hitbox.transform.position = origin + dir * hitboxDistance;
+        hitbox.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
         if (playerAnimator != null) playerAnimator.PlayAttack();
+        if (weapon != null) weapon.Swing(windUp + activeTime);
 
         yield return new WaitForSeconds(windUp);
         hitbox.gameObject.SetActive(true);
-        if (slashEffect != null)
-            slashEffect.Play(hitbox.transform.position, controller.FacingVector);
+        if (slashEffect != null) slashEffect.Play(hitbox.transform.position, dir);
         yield return new WaitForSeconds(activeTime);
         hitbox.gameObject.SetActive(false);
 
@@ -70,6 +80,7 @@ public class PlayerAttack : MonoBehaviour
         if (hitbox != null) hitbox.gameObject.SetActive(false);
         if (controller != null) controller.SpeedMultiplier = 1f;
         if (playerAnimator != null) playerAnimator.CancelAttack();
+        if (weapon != null) weapon.CancelSwing();
         if (slashEffect != null) slashEffect.Stop();
     }
 }

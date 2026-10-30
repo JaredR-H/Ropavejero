@@ -2,6 +2,11 @@ using UnityEngine;
 
 public enum RoomType { Spawn, Normal, Puzzle, FinalExit }
 
+/// Una habitacion = una pantalla completa. Va en el objeto raiz de CADA prefab de sala.
+/// El centro del objeto raiz debe ser el centro de la sala.
+/// Todo el contenido (arte, trampas, puzzle, objeto, puertas) debe ser HIJO de este objeto.
+/// Las puertas (RoomDoor) y los objetos (Collectible) se detectan solos: no hay que asignarlos a mano.
+/// Los vecinos los asigna MapLoader al cargar el mapa, segun la posicion de cada sala.
 public class Room : MonoBehaviour
 {
     [Header("Tipo")]
@@ -9,8 +14,8 @@ public class Room : MonoBehaviour
     [SerializeField] RoomType type = RoomType.Normal;
 
     [Header("Puntos")]
-    [SerializeField] Transform spawnPoint;
-    [SerializeField] Transform cameraPoint;
+    [SerializeField] Transform spawnPoint;            // solo en la sala Spawn: donde aparece el jugador
+    [SerializeField] Transform cameraPoint;           // centro de lo que vera la camara (si esta vacio, el centro de la sala)
 
     [Header("Tiempo")]
     [Tooltip("Desmarcalo en la sala Spawn si no quieres cronometro.")]
@@ -22,6 +27,7 @@ public class Room : MonoBehaviour
     Collectible[] collectibles;
     IResettable[] resettables;
     RoomDoor[] doors;
+    RoomEncounter encounter;
     readonly Room[] neighbors = new Room[4];
 
     public RoomType Type => type;
@@ -56,6 +62,7 @@ public class Room : MonoBehaviour
         collectibles = GetComponentsInChildren<Collectible>(true);
         resettables = GetComponentsInChildren<IResettable>(true);
         doors = GetComponentsInChildren<RoomDoor>(true);
+        encounter = GetComponentInChildren<RoomEncounter>(true);
     }
 
     // ---------- Conexion con las salas vecinas (la hace MapLoader) ----------
@@ -91,6 +98,29 @@ public class Room : MonoBehaviour
         foreach (var d in doors)
             if (d != null && d.Role == DoorRole.FinalExit) return true;
         return false;
+    }
+
+    // ---------- Oleadas de enemigos ----------
+    /// true si la sala no tiene oleadas o ya se completaron.
+    public bool EncounterCompleted
+    {
+        get { EnsureInit(); return encounter == null || encounter.Completed; }
+    }
+
+    /// El jugador entro (o reaparecio) en la sala: si tiene oleadas sin completar, empiezan.
+    public void NotifyEntered()
+    {
+        EnsureInit();
+        if (encounter != null) encounter.Begin();
+    }
+
+    /// Cierra o abre TODAS las puertas de paso por el encuentro. Al abrir solo se abren las que
+    /// no estaban cerradas de origen (Always Open); las otras conservan su estado.
+    public void SetEncounterDoorsLocked(bool locked)
+    {
+        EnsureInit();
+        foreach (var d in doors)
+            if (d != null && d.Role == DoorRole.Forward) d.SetEncounterLocked(locked);
     }
 
     // ---------- Estado de la sala ----------

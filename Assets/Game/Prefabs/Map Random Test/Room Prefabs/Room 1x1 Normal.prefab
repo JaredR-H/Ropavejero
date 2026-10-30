@@ -50,7 +50,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5597633278868858489, guid: c50022fde3f04c749ac3841a0ea1f1ac, type: 3}
       propertyPath: m_Name
-      value: Room_Base
+      value: Room 1x1 Normal
+      objectReference: {fileID: 0}
+    - target: {fileID: 7750713272600267718, guid: c50022fde3f04c749ac3841a0ea1f1ac, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

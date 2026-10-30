@@ -14,7 +14,6 @@ public static class DoorSideExtensions
             default: return DoorSide.Left;
         }
     }
-
     public static Vector2 ToWorldDirection(this DoorSide side)
     {
         switch (side)
@@ -25,7 +24,6 @@ public static class DoorSideExtensions
             default: return Vector2.right;
         }
     }
-
     public static Vector2Int ToGridOffset(this DoorSide side)
     {
         switch (side)
@@ -42,11 +40,9 @@ public enum DoorRole
 {
     Forward = 0,                                // puerta de paso a la sala vecina de su lado
     [InspectorName("Back (YA NO SE USA)")]
-    Back = 1,                                   // obsoleto: se ignora
+    Back = 1,                                   // obsoleto
     FinalExit = 2                               // puerta de victoria
 }
-
-
 public class RoomDoor : MonoBehaviour, IResettable
 {
     [SerializeField] DoorRole role = DoorRole.Forward;
@@ -66,11 +62,13 @@ public class RoomDoor : MonoBehaviour, IResettable
     [SerializeField] Sprite unlockedSprite;
 
     SpriteSwapper swapper;
+    bool baseLocked = true;
+    bool encounterLocked;
 
     public DoorRole Role => role;
     public bool AlwaysOpen => alwaysOpen;
     public DoorSide Side => side;
-    public bool IsLocked { get; private set; } = true;
+    public bool IsLocked => baseLocked || encounterLocked;
 
     void Awake()
     {
@@ -80,11 +78,11 @@ public class RoomDoor : MonoBehaviour, IResettable
             Debug.LogWarning("RoomDoor '" + name + "' no tiene Solid Collider asignado: no bloqueara el paso aunque este cerrada.", this);
         if (role == DoorRole.Back)
             Debug.LogWarning("RoomDoor '" + name + "' usa el rol Back, que ya no se usa. Cambialo a Forward o FinalExit (o borrala si es decorativa).", this);
-        IsLocked = !alwaysOpen;
+        baseLocked = !alwaysOpen;
+        encounterLocked = false;
         Apply();
     }
 
-    /// Puerta si hay sala vecina, pared si no.
     public void SetConnected(bool connected)
     {
         if (!connected && blockedVisual == null)
@@ -93,21 +91,31 @@ public class RoomDoor : MonoBehaviour, IResettable
         gameObject.SetActive(connected);
         if (blockedVisual != null) blockedVisual.SetActive(!connected);
     }
-
     public void Unlock()
     {
-        IsLocked = false;
+        baseLocked = false;
         Apply();
     }
 
     public void Lock()
     {
-        if (alwaysOpen) return;     // una puerta "siempre abierta" nunca se cierra
-        IsLocked = true;
+        if (alwaysOpen) return;
+        baseLocked = true;
         Apply();
     }
 
-    public void ResetState() => Lock();
+    public void SetEncounterLocked(bool locked)
+    {
+        encounterLocked = locked;
+        Apply();
+    }
+
+    public void ResetState()
+    {
+        baseLocked = !alwaysOpen;
+        encounterLocked = false;
+        Apply();
+    }
 
     void Apply()
     {
