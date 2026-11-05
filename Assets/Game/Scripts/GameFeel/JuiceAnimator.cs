@@ -1,12 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-
-/// Squash & stretch y balanceo por curvas. Se pone en el objeto que se quiere animar (normalmente el hijo "Visual"
-/// del personaje, el sprite del arma, un recolectable o un elemento de UI).
-///  - Reposo y caminar: continuos; SetMove(0..1) mezcla uno con otro.
-///  - Animaciones de un disparo: Play("Dash", direccion), Play("Charge", ...), etc. Se pueden superponer.
-/// Convive con otros scripts que muevan el mismo Transform (por ejemplo el salto del jugador): suma sus efectos
-/// encima y no pisa lo que ellos hagan. Para que el estiramiento crezca desde los pies, pon el pivote del sprite abajo.
 public class JuiceAnimator : MonoBehaviour
 {
     [Tooltip("Perfil con las curvas. Si esta vacio se usa uno por defecto; crea uno propio para editarlo (Create > Ropavejero > Juice Profile).")]
@@ -15,6 +8,8 @@ public class JuiceAnimator : MonoBehaviour
     [SerializeField, Min(0f)] float intensity = 1f;
     [Tooltip("Marcalo para UI o cosas que deben animarse con el juego en pausa.")]
     [SerializeField] bool useUnscaledTime = false;
+    [Tooltip("Desmarcalo si solo quieres animaciones puntuales (botones, textos): sin el balanceo continuo de reposo y caminar.")]
+    [SerializeField] bool playLoops = true;
 
     struct ActiveShot
     {
@@ -32,8 +27,22 @@ public class JuiceAnimator : MonoBehaviour
 
     float idlePhase, movePhase;
     float moveBlend, moveTarget;
+    float scaleMul = 1f, scaleTarget = 1f, scaleSpeed = 10f;
 
-    // Lo ultimo que aplicamos, para no pisar a otros scripts
+    static JuiceProfile fallbackProfile;
+    static JuiceProfile Fallback
+    {
+        get
+        {
+            if (fallbackProfile == null)
+            {
+                fallbackProfile = ScriptableObject.CreateInstance<JuiceProfile>();
+                fallbackProfile.hideFlags = HideFlags.HideAndDontSave;
+            }
+            return fallbackProfile;
+        }
+    }
+
     bool applied;
     Vector3 lastPos, lastOffset, lastScale, lastFactor;
     Quaternion lastRot, lastRotOffset;
@@ -42,7 +51,6 @@ public class JuiceAnimator : MonoBehaviour
     {
         rect = transform as RectTransform;
         SetProfile(profile);
-        // Fase al azar: dos enemigos iguales no se balancean sincronizados.
         idlePhase = Random.value;
         movePhase = Random.value;
     }
@@ -74,16 +82,34 @@ public class JuiceAnimator : MonoBehaviour
         }
     }
 
+    public void Configure(JuiceProfile newProfile, bool unscaled, bool loops)
+    {
+        useUnscaledTime = unscaled;
+        playLoops = loops;
+        if (newProfile != null) SetProfile(newProfile);
+    }
+
     // ---------- Control ----------
-    /// 0 = reposo, 1 = caminando. Se mezcla suavemente.
+
     public void SetMove(float amount) => moveTarget = Mathf.Clamp01(amount);
 
-    /// Reproduce una animacion de un disparo por su nombre. direction solo importa si su eje es FromDirection.
-    /// duration > 0 reemplaza la duracion del perfil. intensity multiplica el efecto de esta reproduccion.
+    /// Tamano permanente (1 = normal) al que se acerca con suavidad: crecer al pasar el mouse, aviso de poco tiempo...
+    public void SetScaleMultiplier(float target, float speed = 10f)
+    {
+        scaleTarget = Mathf.Max(0.01f, target);
+        scaleSpeed = Mathf.Max(0.1f, speed);
+    }
+
+    /// Fija el tamano al instante, sin transicion.
+    public void SnapScale(float value)
+    {
+        scaleMul = scaleTarget = Mathf.Max(0.01f, value);
+    }
+
     public void Play(string shotName, Vector2 direction = default, float duration = 0f, float intensity = 1f)
     {
         if (active == null) return;
-        ShotMotion motion = active.FindShot(shotName);
+        ShotMotion motion = active.FindShot(shotName) ?? Fallback.FindShot(shotName);
         if (motion == null) return;
 
         bool horizontal;
@@ -96,7 +122,6 @@ public class JuiceAnimator : MonoBehaviour
             default: horizontal = false; break;
         }
 
-        // Si ya hay una igual, se reinicia.
         Stop(shotName);
         shots.Add(new ActiveShot
         {
@@ -108,7 +133,6 @@ public class JuiceAnimator : MonoBehaviour
         });
     }
 
-    /// Para llamarlo desde un UnityEvent (por ejemplo el OnClick de un boton).
     public void PlayByName(string shotName) => Play(shotName);
 
     public void Stop(string shotName)
@@ -132,8 +156,15 @@ public class JuiceAnimator : MonoBehaviour
 
         float fx = 1f, fy = 1f, rot = 0f, y = 0f;
 
-        AddLoop(active.idle, idlePhase, 1f - moveBlend, ref fx, ref fy, ref rot, ref y);
-        AddLoop(active.move, movePhase, moveBlend, ref fx, ref fy, ref rot, ref y);
+        if (playLoops)
+        {
+            AddLoop(active.idle, idlePhase, 1f - moveBlend, ref fx, ref fy, ref rot, ref y);
+            AddLoop(active.move, movePhase, moveBlend, ref fx, ref fy, ref rot, ref y);
+        }
+
+        scaleMul = Mathf.Lerp(scaleMul, scaleTarget, 1f - Mathf.Exp(-scaleSpeed * dt));
+        fx *= scaleMul;
+        fy *= scaleMul;
 
         for (int i = shots.Count - 1; i >= 0; i--)
         {
@@ -174,10 +205,6 @@ public class JuiceAnimator : MonoBehaviour
         if (horizontal) { fx *= main; fy *= other; }
         else { fy *= main; fx *= other; }
     }
-
-    // ---------- Aplicar sin pisar a otros scripts ----------
-    // Si el Transform sigue exactamente como lo dejamos, le quitamos nuestro efecto anterior para obtener su valor base.
-    // Si otro script lo cambio (salto, animator...), ese valor nuevo ya es la base.
     void Apply(float fx, float fy, float rotDeg, float yOffset)
     {
         Transform t = transform;

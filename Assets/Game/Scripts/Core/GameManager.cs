@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public enum GameState { Playing, Dead, Transition, GameOver, Win }
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -15,9 +16,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] PlayerController player;
     [SerializeField] Camera mainCamera;
     [SerializeField] UIManager ui;
-    [SerializeField] IrisTransition iris;
+    [SerializeField] IrisTransition iris;          // opcional: solo se usa al empezar la partida
     [Tooltip("Opcional: dirige la camara (shake, zoom), el hitstop, la camara lenta y el congelado al morir. Sin el, el juego funciona sin esos efectos.")]
     [SerializeField] GameFeel gameFeel;
+    [Tooltip("Opcional: fundido a negro lento al reiniciar. Si esta vacio se usa el ScreenFader de la escena (si hay).")]
+    [SerializeField] ScreenFader fader;
 
     [Header("Reglas")]
     [Tooltip("Si esta activo, al morir en una trampa el tiempo de la sala vuelve a empezar.")]
@@ -33,13 +36,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] float walkInDistance = 1.6f;
 
     [Header("Inicio de partida (iris)")]
-    [SerializeField] float irisHoldTime = 0.15f;
+    [SerializeField] float irisHoldTime = 0.15f;   // tiempo con la pantalla cerrada
     [SerializeField] float irisOpenTime = 0.5f;
 
     PlayerHealth health;
     List<Room> allRooms = new List<Room>();
     Room currentRoom;
-    Vector3 entryPosition;
+    Vector3 entryPosition;          // donde reapareces al morir en la sala actual
     int totalItems;
     float timeLeft;
     float totalTime;
@@ -49,6 +52,8 @@ public class GameManager : MonoBehaviour
     public bool IsPlaying => State == GameState.Playing;
     public int Deaths { get; private set; }
     public Room CurrentRoom => currentRoom;
+
+    ScreenFader Fader => fader != null ? fader : ScreenFader.Instance;
 
     public int ItemsCollected
     {
@@ -60,6 +65,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Si el mapa no tiene ningun objeto, la salida esta abierta desde el principio.
     bool AllItemsCollected => ItemsCollected >= totalItems;
 
     void Awake()
@@ -95,6 +101,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        // Las salas se crean activas; en juego solo vive la actual.
         foreach (var r in allRooms)
         {
             totalItems += r.CollectibleCount;
@@ -125,6 +132,7 @@ public class GameManager : MonoBehaviour
     }
 
     // ---------- Camara ----------
+    // Si hay GameFeel, el dirige la camara (shake y zoom se suman encima de esta posicion base).
     Vector3 GetCameraBase() => gameFeel != null ? gameFeel.CameraBase : mainCamera.transform.position;
 
     void SetCameraBase(Vector3 position)
@@ -134,6 +142,8 @@ public class GameManager : MonoBehaviour
     }
 
     // ---------- Salas ----------
+    /// entry = donde aparece el jugador (y donde reaparece al morir en esta sala).
+    /// startPlaying = false deja al jugador congelado (estado Transition) hasta que termine la intro.
     void EnterRoom(Room room, Vector3 entry, bool startPlaying = true)
     {
         currentRoom = room;
@@ -158,10 +168,13 @@ public class GameManager : MonoBehaviour
         RefreshHud();
     }
 
+    /// Lo que ya se logro en la partida se refleja en la sala al (re)entrar o reiniciarla.
     void ApplyProgress(Room room)
     {
+        // Objeto de esta sala ya guardado en una visita anterior: sus puertas quedan abiertas.
         if (room.CollectibleCount > 0 && room.AllCollected) room.UnlockDoors();
 
+        // Con todos los objetos, la salida esta abierta.
         if (AllItemsCollected) room.UnlockFinalExit();
     }
 
@@ -171,6 +184,7 @@ public class GameManager : MonoBehaviour
         player.InputEnabled = true;
         ignoreDoorsUntil = Time.time + doorCooldown;
 
+        // Si la sala tiene oleadas sin completar, empiezan ahora (al entrar, al reaparecer o al reintentar).
         if (currentRoom != null) currentRoom.NotifyEntered();
     }
 
@@ -185,6 +199,7 @@ public class GameManager : MonoBehaviour
         BeginPlaying();
     }
 
+    /// Lo llama Room cuando el jugador recoge TODOS los objetos de esa sala.
     public void OnRoomItemsCollected(Room room)
     {
         if (room != currentRoom) return;
@@ -203,6 +218,19 @@ public class GameManager : MonoBehaviour
         RefreshHud();
     }
 
+    /// Lo llama Collectible al ser recogido: el objeto aparece en la UI.
+    public void OnCollectibleCollected(Collectible collectible)
+    {
+        ui.AddCollectedItem(collectible);
+    }
+
+    /// Lo llama Collectible cuando reaparece (moriste antes de salir de la sala): sale de la UI.
+    public void OnCollectibleRestored(Collectible collectible)
+    {
+        ui.RemoveCollectedItem(collectible);
+    }
+
+    /// Lo llama RoomDoor cuando el jugador toca una puerta ya abierta.
     public void OnDoorEntered(RoomDoor door)
     {
         if (State != GameState.Playing) return;
@@ -220,9 +248,12 @@ public class GameManager : MonoBehaviour
                 WinGame();
                 break;
 
+            // DoorRole.Back: ya no se usa, se ignora
         }
     }
 
+    /// Congela el juego, desliza la camara a la sala vecina mientras el jugador avanza por la puerta y reanuda.
+    /// La sala nueva ya esta pegada a la actual, asi que no hay teletransporte.
     IEnumerator SlideRoutine(Room next, DoorSide side)
     {
         State = GameState.Transition;
@@ -231,10 +262,12 @@ public class GameManager : MonoBehaviour
         Room previous = currentRoom;
         Vector2 dir = side.ToWorldDirection();
 
+        // La sala nueva se enciende y se prepara, pero congelada hasta que termine el deslizamiento.
         next.gameObject.SetActive(true);
         next.ResetRoom();
         ApplyProgress(next);
 
+        // Hasta donde avanza el jugador: pasando la puerta de llegada de la sala nueva.
         Vector3 playerStart = player.transform.position;
         Vector3 playerEnd = playerStart + (Vector3)(dir * walkInDistance);
         RoomDoor arrival = next.GetDoor(side.Opposite());
@@ -244,13 +277,15 @@ public class GameManager : MonoBehaviour
             Vector2 doorPos = arrival.transform.position;
             if (Mathf.Abs(dir.x) > 0.5f) target.x = doorPos.x + dir.x * walkInDistance;
             else target.y = doorPos.y + dir.y * walkInDistance;
+
+            // Solo si de verdad avanza hacia adelante
             if (Vector2.Dot((Vector2)(target - playerStart), dir) > 0.1f) playerEnd = target;
         }
 
         Vector3 camStart = GetCameraBase();
         Vector3 camTarget = new Vector3(next.CameraPosition.x, next.CameraPosition.y, camStart.z);
 
-        Time.timeScale = 0f;
+        Time.timeScale = 0f;      // pausa: trampas, flechas y enemigos quietos
         try
         {
             float t = 0f;
@@ -266,7 +301,7 @@ public class GameManager : MonoBehaviour
         }
         finally
         {
-            Time.timeScale = 1f;
+            Time.timeScale = 1f;  // despausa siempre, aunque algo interrumpa la corutina
         }
 
         player.transform.position = playerEnd;
@@ -277,11 +312,13 @@ public class GameManager : MonoBehaviour
             body.linearVelocity = Vector2.zero;
         }
         Physics2D.SyncTransforms();
+
+        // Se guardan los objetos de la sala que dejamos y se cambia de sala.
         previous.BankCollectibles();
         previous.gameObject.SetActive(false);
 
         currentRoom = next;
-        entryPosition = playerEnd;
+        entryPosition = playerEnd;      // aqui reapareces si mueres en esta sala
         timeLeft = next.TimeLimit;
         RefreshHud();
         BeginPlaying();
@@ -311,13 +348,13 @@ public class GameManager : MonoBehaviour
         if (gameFeel != null) gameFeel.Release();    // el tiempo vuelve cuando el jugador ya reaparecio
     }
 
-    void ResetRoomAndRespawn(bool resetTimer)
+    void ResetRoomAndRespawn(bool resetTimer, bool begin = true)
     {
         currentRoom.ResetRoom();
         ApplyProgress(currentRoom);
         health.Revive(entryPosition);
         if (resetTimer) timeLeft = currentRoom.TimeLimit;
-        BeginPlaying();
+        if (begin) BeginPlaying();
         RefreshHud();
     }
 
@@ -336,8 +373,26 @@ public class GameManager : MonoBehaviour
     public void RetryRoom()
     {
         if (State != GameState.GameOver) return;
-        ui.HidePanels();
-        ResetRoomAndRespawn(true);
+
+        ScreenFader f = Fader;
+        if (f == null)
+        {
+            ui.HidePanels();
+            ResetRoomAndRespawn(true);
+            return;
+        }
+
+        // Efecto del boton -> fundido lento a negro -> la sala se reinicia con la pantalla tapada -> se aclara -> se juega.
+        f.FadeOutThen(
+            onBlack: () =>
+            {
+                ui.HidePanels();
+                ResetRoomAndRespawn(true, false);
+                State = GameState.Transition;          // sin control hasta que la pantalla se vea
+                player.InputEnabled = false;
+            },
+            fadeBackIn: true,
+            onVisible: BeginPlaying);
     }
 
     void WinGame()
@@ -352,6 +407,13 @@ public class GameManager : MonoBehaviour
     /// Boton "Jugar de nuevo": recarga la escena, asi que MapLoader elige otro mapa al azar.
     public void RestartGame()
     {
+        ScreenFader f = Fader;
+        if (f != null)
+        {
+            f.ReloadScene();      // espera, fundido lento a negro y recarga
+            return;
+        }
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

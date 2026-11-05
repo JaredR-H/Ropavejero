@@ -3,12 +3,11 @@ using UnityEngine;
 
 public enum JuiceAxis
 {
-    Vertical,        // estira hacia arriba / abajo
-    Horizontal,      // estira hacia los lados
-    FromDirection    // eje X o Y segun la direccion que se pase al reproducir (ej. el dash)
+    Vertical,
+    Horizontal,
+    FromDirection
 }
 
-/// Movimiento continuo en ciclo (reposo, caminar). Las curvas van de 0 a 1 = UN ciclo completo.
 [Serializable]
 public class LoopMotion
 {
@@ -28,7 +27,6 @@ public class LoopMotion
     public float yOffsetAmount = 0f;
 }
 
-/// Animacion de un solo disparo (dash, golpe, carga...). Las curvas van de 0 a 1 = toda la duracion.
 [Serializable]
 public class ShotMotion
 {
@@ -51,8 +49,6 @@ public class ShotMotion
     public float yOffsetAmount = 0f;
 }
 
-/// Perfil de animacion reutilizable: se crea una vez (Create > Ropavejero > Juice Profile) y se asigna a cualquier
-/// JuiceAnimator (jugador, enemigos, arcos, recolectables, botones...). Todo se edita con curvas y valores.
 [CreateAssetMenu(fileName = "JuiceProfile", menuName = "Ropavejero/Juice Profile")]
 public class JuiceProfile : ScriptableObject
 {
@@ -95,7 +91,6 @@ public class JuiceProfile : ScriptableObject
     }
 }
 
-/// Ayudantes para crear curvas por codigo (valores por defecto). Despues se editan a mano en el inspector.
 public static class JuiceCurves
 {
     public static AnimationCurve Zero() => AnimationCurve.Constant(0f, 1f, 0f);
@@ -114,13 +109,11 @@ public static class JuiceCurves
         return new AnimationCurve(keys);
     }
 
-    /// Seno con 'cycles' ciclos completos dentro de la curva.
     public static AnimationCurve Sine(float cycles, float phase = 0f)
     {
         return FromFunction(x => Mathf.Sin(2f * Mathf.PI * (cycles * x + phase)), Mathf.Max(8, Mathf.CeilToInt(cycles * 8f)));
     }
 
-    /// Rebote de 0 a 1 y de vuelta, 'cycles' veces.
     public static AnimationCurve Hop(float cycles)
     {
         return FromFunction(x => 0.5f - 0.5f * Mathf.Cos(2f * Mathf.PI * cycles * x), Mathf.Max(8, Mathf.CeilToInt(cycles * 8f)));
@@ -130,7 +123,6 @@ public static class JuiceCurves
     {
         return new[]
         {
-            // Dash: estiramiento pronunciado al arrancar que se relaja, con un pequeno aplastamiento al final
             new ShotMotion
             {
                 name = "Dash", duration = 0.22f, axis = JuiceAxis.FromDirection, preserveVolume = true,
@@ -139,7 +131,6 @@ public static class JuiceCurves
                 stretchAmount = 0.6f
             },
 
-            // Carga: balanceo rapido y pulsos de squash & stretch que crecen (explosion, apuntar)
             new ShotMotion
             {
                 name = "Charge", duration = 0.6f, axis = JuiceAxis.Vertical, preserveVolume = true,
@@ -148,16 +139,12 @@ public static class JuiceCurves
                 rotation = FromFunction(x => Mathf.Sin(2f * Mathf.PI * 7f * x) * (0.3f + 0.7f * x), 48),
                 rotationAmount = 8f
             },
-
-            // Soltar el disparo: aplasta de golpe y rebota
             new ShotMotion
             {
                 name = "Release", duration = 0.28f, axis = JuiceAxis.Vertical, preserveVolume = true,
                 stretch = FromFunction(x => -Mathf.Exp(-5f * x) * Mathf.Cos(2f * Mathf.PI * 2f * x), 32),
                 stretchAmount = 0.3f
             },
-
-            // Arco: se tensa (estira) y al soltar se aplasta
             new ShotMotion
             {
                 name = "BowDraw", duration = 0.5f, axis = JuiceAxis.Horizontal, preserveVolume = true,
@@ -170,8 +157,6 @@ public static class JuiceCurves
                 stretch = FromFunction(x => -Mathf.Exp(-6f * x) * Mathf.Cos(2f * Mathf.PI * 3f * x), 32),
                 stretchAmount = 0.45f
             },
-
-            // Golpe recibido: aplastamiento y temblor
             new ShotMotion
             {
                 name = "Hit", duration = 0.2f, axis = JuiceAxis.Vertical, preserveVolume = true,
@@ -181,12 +166,60 @@ public static class JuiceCurves
                 rotationAmount = 6f
             },
 
-            // Pop: para recolectables, botones y aparicion de objetos
             new ShotMotion
             {
                 name = "Pop", duration = 0.3f, axis = JuiceAxis.Vertical, preserveVolume = true,
                 stretch = FromFunction(x => Mathf.Sin(2f * Mathf.PI * x) * (1f - x)),
                 stretchAmount = 0.25f
+            },
+            new ShotMotion
+            {
+                name = "NumberBounce", duration = 0.28f, axis = JuiceAxis.Vertical, preserveVolume = true,
+                stretch = FromFunction(x => Mathf.Sin(2f * Mathf.PI * x) * Mathf.Pow(Mathf.Clamp01(1f - x), 1.5f)),
+                stretchAmount = 0.14f,
+                yOffset = FromFunction(x => Mathf.Sin(Mathf.PI * Mathf.Clamp01(x))),
+                yOffsetAmount = 4f
+            },
+
+            new ShotMotion
+            {
+                name = "NumberBounceStrong", duration = 0.34f, axis = JuiceAxis.Vertical, preserveVolume = true,
+                stretch = FromFunction(x => Mathf.Sin(2f * Mathf.PI * x) * Mathf.Pow(Mathf.Clamp01(1f - x), 1.3f)),
+                stretchAmount = 0.28f,
+                rotation = FromFunction(x => Mathf.Sin(2f * Mathf.PI * 2f * x) * (1f - x)),
+                rotationAmount = 4f,
+                yOffset = FromFunction(x => Mathf.Sin(Mathf.PI * Mathf.Clamp01(x))),
+                yOffsetAmount = 9f
+            },
+
+            new ShotMotion
+            {
+                name = "ButtonHover", duration = 0.3f, axis = JuiceAxis.Vertical, preserveVolume = true,
+                stretch = FromFunction(x => Mathf.Sin(2f * Mathf.PI * x) * (1f - x)),
+                stretchAmount = 0.1f
+            },
+
+            new ShotMotion
+            {
+                name = "ButtonPress", duration = 0.16f, axis = JuiceAxis.Vertical, preserveVolume = true,
+                stretch = FromFunction(x => -Mathf.Sin(Mathf.PI * Mathf.Clamp01(x))),
+                stretchAmount = 0.14f
+            },
+
+            new ShotMotion
+            {
+                name = "ButtonRelease", duration = 0.4f, axis = JuiceAxis.Vertical, preserveVolume = true,
+                stretch = FromFunction(x => Mathf.Exp(-5f * x) * Mathf.Sin(2f * Mathf.PI * 2.2f * x), 32),
+                stretchAmount = 0.22f
+            },
+
+            new ShotMotion
+            {
+                name = "ItemPop", duration = 0.6f, axis = JuiceAxis.Vertical, preserveVolume = true,
+                stretch = FromFunction(x => Mathf.Exp(-4.5f * x) * Mathf.Sin(2f * Mathf.PI * 2.5f * x), 40),
+                stretchAmount = 0.5f,
+                rotation = FromFunction(x => Mathf.Exp(-4f * x) * Mathf.Sin(2f * Mathf.PI * 3f * x), 40),
+                rotationAmount = 14f
             }
         };
     }
