@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 [RequireComponent(typeof(Rigidbody2D))]
 public abstract class Enemy : MonoBehaviour, IHittable, IResettable
 {
@@ -44,6 +45,10 @@ public abstract class Enemy : MonoBehaviour, IHittable, IResettable
     Collider2D playerCollider;
     Vector3 startLocalPos;
     readonly List<GameObject> projectiles = new List<GameObject>();
+
+    /// Se dispara cuando el jugador derrota a un enemigo (por ejemplo, para recargar la barra del ataque cargado).
+    public static event System.Action<Enemy> AnyDefeated;
+    protected void NotifyDefeated() => AnyDefeated?.Invoke(this);
 
     protected bool GameIsPlaying => GameManager.Instance == null || GameManager.Instance.IsPlaying;
     protected bool IsWaking => wakeTimer > 0f;
@@ -126,18 +131,23 @@ public abstract class Enemy : MonoBehaviour, IHittable, IResettable
         Vector2 from = attacker != null ? (Vector2)attacker.transform.position : rb.position + Vector2.down;
         Vector2 dir = rb.position - from;
         if (dir.sqrMagnitude < 0.0001f) dir = Vector2.up;
-        TakeHit(1, dir.normalized);
+
+        // El ataque cargado trae mas dano, mas empuje y mas sensacion de golpe.
+        int damage = attacker != null ? attacker.CurrentDamage : 1;
+        float knockback = attacker != null ? attacker.KnockbackMultiplier : 1f;
+        float feel = attacker != null ? attacker.HitFeelMultiplier : 1f;
+        TakeHit(damage, dir.normalized, knockback, feel);
     }
 
-    protected virtual void TakeHit(int damage, Vector2 direction)
+    protected virtual void TakeHit(int damage, Vector2 direction, float knockbackMultiplier = 1f, float feelMultiplier = 1f)
     {
         health -= damage;
-        knockVelocity = direction * knockbackForce;
+        knockVelocity = direction * knockbackForce * knockbackMultiplier;
         stunTimer = hitStun;
 
         if (flasher != null) flasher.Flash(0.09f);
-        if (juice != null) juice.Play("Hit");
-        if (GameFeel.Instance != null) GameFeel.Instance.EnemyHit(direction);
+        if (juice != null) juice.Play("Hit", Vector2.zero, 0f, feelMultiplier > 1f ? 1.6f : 1f);
+        if (GameFeel.Instance != null) GameFeel.Instance.EnemyHit(direction, feelMultiplier);
 
         OnDamaged();
         if (health <= 0) Defeat(direction);
@@ -149,6 +159,7 @@ public abstract class Enemy : MonoBehaviour, IHittable, IResettable
     protected virtual void Defeat(Vector2 direction)
     {
         defeated = true;
+        NotifyDefeated();
         ClearProjectiles();
         if (defeatEffect != null) Destroy(Instantiate(defeatEffect, transform.position, Quaternion.identity), 2f);
         gameObject.SetActive(false);

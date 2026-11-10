@@ -14,6 +14,7 @@ public static class DoorSideExtensions
             default: return DoorSide.Left;
         }
     }
+
     public static Vector2 ToWorldDirection(this DoorSide side)
     {
         switch (side)
@@ -24,6 +25,7 @@ public static class DoorSideExtensions
             default: return Vector2.right;
         }
     }
+
     public static Vector2Int ToGridOffset(this DoorSide side)
     {
         switch (side)
@@ -38,11 +40,12 @@ public static class DoorSideExtensions
 
 public enum DoorRole
 {
-    Forward = 0,                                // puerta de paso a la sala vecina de su lado
+    Forward = 0,
     [InspectorName("Back (YA NO SE USA)")]
-    Back = 1,                                   // obsoleto
-    FinalExit = 2                               // puerta de victoria
+    Back = 1,
+    FinalExit = 2
 }
+
 public class RoomDoor : MonoBehaviour, IResettable
 {
     [SerializeField] DoorRole role = DoorRole.Forward;
@@ -50,6 +53,9 @@ public class RoomDoor : MonoBehaviour, IResettable
     [SerializeField] bool alwaysOpen = false;
     [SerializeField] Collider2D solidCollider;
     [SerializeField] SpriteRenderer sr;
+    [Tooltip("Opcional: objeto que se anima con el squash & stretch al abrirse o cerrarse (por ejemplo, un hijo solo con el sprite, " +
+             "para que el collider no cambie de tamano). Si esta vacio se anima la propia puerta.")]
+    [SerializeField] Transform visualTarget;
 
     [Header("Lado")]
     [Tooltip("En que lado de la sala esta esta puerta (Up, Down, Left, Right).")]
@@ -62,6 +68,9 @@ public class RoomDoor : MonoBehaviour, IResettable
     [SerializeField] Sprite unlockedSprite;
 
     SpriteSwapper swapper;
+    JuiceAnimator juice;
+    bool shownLocked;
+    bool shownInit;
     bool baseLocked = true;
     bool encounterLocked;
 
@@ -74,13 +83,18 @@ public class RoomDoor : MonoBehaviour, IResettable
     {
         if (sr == null) sr = GetComponent<SpriteRenderer>();
         swapper = new SpriteSwapper(sr);
+
+        Transform target = visualTarget != null ? visualTarget : transform;
+        juice = target.GetComponent<JuiceAnimator>();
+        if (juice == null) juice = target.gameObject.AddComponent<JuiceAnimator>();
+        juice.Configure(null, false, false);
         if (solidCollider == null)
             Debug.LogWarning("RoomDoor '" + name + "' no tiene Solid Collider asignado: no bloqueara el paso aunque este cerrada.", this);
         if (role == DoorRole.Back)
             Debug.LogWarning("RoomDoor '" + name + "' usa el rol Back, que ya no se usa. Cambialo a Forward o FinalExit (o borrala si es decorativa).", this);
         baseLocked = !alwaysOpen;
         encounterLocked = false;
-        Apply();
+        Apply(false);
     }
 
     public void SetConnected(bool connected)
@@ -91,6 +105,7 @@ public class RoomDoor : MonoBehaviour, IResettable
         gameObject.SetActive(connected);
         if (blockedVisual != null) blockedVisual.SetActive(!connected);
     }
+
     public void Unlock()
     {
         baseLocked = false;
@@ -99,7 +114,7 @@ public class RoomDoor : MonoBehaviour, IResettable
 
     public void Lock()
     {
-        if (alwaysOpen) return;
+        if (alwaysOpen) return;     // una puerta "siempre abierta" nunca se cierra por si sola
         baseLocked = true;
         Apply();
     }
@@ -114,13 +129,21 @@ public class RoomDoor : MonoBehaviour, IResettable
     {
         baseLocked = !alwaysOpen;
         encounterLocked = false;
-        Apply();
+        Apply(false);
     }
 
-    void Apply()
+    void Apply(bool animate = true)
     {
-        if (solidCollider != null) solidCollider.enabled = IsLocked;
-        if (swapper != null) swapper.Show(IsLocked ? lockedSprite : unlockedSprite);
+        bool locked = IsLocked;
+        if (solidCollider != null) solidCollider.enabled = locked;
+        if (swapper != null) swapper.Show(locked ? lockedSprite : unlockedSprite);
+
+        // Squash & stretch cuando la puerta se desbloquea o se bloquea
+        if (animate && shownInit && locked != shownLocked && juice != null && isActiveAndEnabled)
+            juice.Play(locked ? "DoorLock" : "DoorUnlock");
+
+        shownLocked = locked;
+        shownInit = true;
     }
 
     void OnTriggerStay2D(Collider2D other)

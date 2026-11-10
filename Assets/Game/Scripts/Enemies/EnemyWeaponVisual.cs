@@ -1,15 +1,13 @@
+using System.Collections;
 using UnityEngine;
 
-/// Arma que lleva un enemigo (por ejemplo el arco del arquero): apunta SIEMPRE hacia el jugador, para que el jugador
-/// sepa que le estan apuntando. Su JuiceAnimator hace de tensar el arco (BowDraw) y soltar (BowRelease).
-/// Estructura:  Enemigo > BowPivot (este script) > Bow (SpriteRenderer dibujado apuntando a la DERECHA + JuiceAnimator)
 public class EnemyWeaponVisual : MonoBehaviour
 {
     [Tooltip("El SpriteRenderer del arma (hijo de este objeto).")]
     [SerializeField] SpriteRenderer weaponRenderer;
     [Tooltip("El sprite del enemigo, para ordenar el arma delante o detras de el.")]
     [SerializeField] SpriteRenderer ownerRenderer;
-    [Tooltip("JuiceAnimator del sprite del arma. Si esta vacio se busca en el.")]
+    [Tooltip("JuiceAnimator del sprite del arma (solo el arco lo necesita).")]
     [SerializeField] JuiceAnimator weaponJuice;
     [Tooltip("Altura de las manos respecto al pivote del enemigo.")]
     [SerializeField] Vector2 originOffset = new Vector2(0f, 0.4f);
@@ -19,11 +17,35 @@ public class EnemyWeaponVisual : MonoBehaviour
     [SerializeField] float turnSpeed = 540f;
     [SerializeField] bool flipWhenAimingLeft = true;
 
+    [Header("Espada: carga y golpe")]
+    [Tooltip("Cuanto echa la espada hacia atras al cargar (grados).")]
+    [SerializeField] float chargeBackAngle = 55f;
+    [Tooltip("Vibracion de la espada mientras carga (grados). Menor que en otros enemigos.")]
+    [SerializeField] float chargeShake = 2.5f;
+    [Tooltip("Hasta donde llega el golpe, al otro lado del jugador (grados).")]
+    [SerializeField] float strikeAngle = 70f;
+    [Tooltip("Progreso del golpe: tiempo (0 a 1) en X, avance de la carga al final del golpe (0 a 1) en Y. Puede pasarse de 1.")]
+    [SerializeField] AnimationCurve strikeCurve = DefaultStrikeCurve();
+    [Tooltip("Lo que tarda la espada en volver a su sitio despues del golpe.")]
+    [SerializeField] float returnTime = 0.25f;
+
     Transform owner;
     PlayerHealth player;
     Collider2D playerCollider;
     float angle;
+    float offsetAngle;
     bool initialized;
+    Coroutine anim;
+
+    static AnimationCurve DefaultStrikeCurve()
+    {
+        var curve = new AnimationCurve(
+            new Keyframe(0f, 0f),
+            new Keyframe(0.55f, 1.08f),
+            new Keyframe(1f, 1f));
+        for (int i = 0; i < curve.length; i++) curve.SmoothTangents(i, 0f);
+        return curve;
+    }
 
     void Awake()
     {
@@ -36,7 +58,11 @@ public class EnemyWeaponVisual : MonoBehaviour
         if (weaponRenderer != null) weaponRenderer.transform.localPosition = new Vector3(distance, 0f, 0f);
     }
 
-    void OnEnable() => initialized = false;
+    void OnEnable()
+    {
+        initialized = false;
+        offsetAngle = 0f;
+    }
 
     void LateUpdate()
     {
@@ -62,7 +88,7 @@ public class EnemyWeaponVisual : MonoBehaviour
                 initialized = true;
             }
         }
-        transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        transform.rotation = Quaternion.Euler(0f, 0f, angle + offsetAngle);
 
         if (weaponRenderer == null) return;
         if (flipWhenAimingLeft) weaponRenderer.flipY = Mathf.Abs(Mathf.DeltaAngle(angle, 0f)) > 90f;
@@ -75,6 +101,7 @@ public class EnemyWeaponVisual : MonoBehaviour
         }
     }
 
+    // ---------- Arco ----------
     /// El arquero empieza a apuntar: el arco se tensa durante 'duration' segundos.
     public void Draw(float duration)
     {
@@ -87,8 +114,80 @@ public class EnemyWeaponVisual : MonoBehaviour
         if (weaponJuice != null) weaponJuice.Play("BowRelease");
     }
 
+    // ---------- Espada ----------
+    /// Carga: la espada se echa hacia atras con una vibracion corta, y se queda atras hasta el golpe.
+    public void Charge(float duration)
+    {
+        StartAnim(ChargeRoutine(Mathf.Max(0.02f, duration)));
+    }
+
+    /// Golpe: la espada pasa de atras a adelante siguiendo la curva y despues vuelve a su sitio.
+    public void Strike(float duration)
+    {
+        StartAnim(StrikeRoutine(Mathf.Max(0.02f, duration)));
+    }
+
+    /// Corta cualquier movimiento de la espada (por ejemplo, si el enemigo recibe un golpe).
+    public void CancelAttack()
+    {
+        StopAnim();
+        offsetAngle = 0f;
+    }
+
+    /// Corta todo: arco y espada.
     public void Cancel()
     {
         if (weaponJuice != null) weaponJuice.StopAll();
+        CancelAttack();
+    }
+
+    void StartAnim(IEnumerator routine)
+    {
+        StopAnim();
+        anim = StartCoroutine(routine);
+    }
+
+    void StopAnim()
+    {
+        if (anim != null) StopCoroutine(anim);
+        anim = null;
+    }
+
+    IEnumerator ChargeRoutine(float duration)
+    {
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float k = Mathf.Clamp01(t / duration);
+            offsetAngle = chargeBackAngle * Mathf.SmoothStep(0f, 1f, k) + Mathf.Sin(t * 70f) * chargeShake * k;
+            yield return null;
+        }
+        offsetAngle = chargeBackAngle;     // se queda atras hasta que llegue el golpe
+        anim = null;
+    }
+
+    IEnumerator StrikeRoutine(float duration)
+    {
+        float start = offsetAngle;
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float k = Mathf.Clamp01(t / duration);
+            offsetAngle = Mathf.LerpUnclamped(start, -strikeAngle, strikeCurve.Evaluate(k));
+            yield return null;
+        }
+
+        float from = offsetAngle;
+        t = 0f;
+        while (t < returnTime)
+        {
+            t += Time.deltaTime;
+            offsetAngle = Mathf.Lerp(from, 0f, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / Mathf.Max(0.02f, returnTime))));
+            yield return null;
+        }
+        offsetAngle = 0f;
+        anim = null;
     }
 }

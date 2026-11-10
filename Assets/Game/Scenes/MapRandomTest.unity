@@ -1827,6 +1827,51 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   flipWhenAimingLeft: 0
+  chargePullAngle: 75
+  chargeShake: 3
+  chargedArcMultiplier: 1.5
+  chargedScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 5
+      outSlope: 5
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.2
+      value: 1
+      inSlope: 2.5
+      outSlope: 2.5
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.75
+      value: 1
+      inSlope: -0.29999995
+      outSlope: -0.29999995
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.85
+      inSlope: -0.5999999
+      outSlope: -0.5999999
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &661684848
 GameObject:
   m_ObjectHideFlags: 0
@@ -3598,6 +3643,7 @@ GameObject:
   - component: {fileID: 1265100494}
   - component: {fileID: 1265100499}
   - component: {fileID: 1265100500}
+  - component: {fileID: 1265100501}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -3690,6 +3736,59 @@ MonoBehaviour:
   moveSpeedWhileAttacking: 0.4
   slashEffect: {fileID: 0}
   weapon: {fileID: 652457130}
+  meter: {fileID: 0}
+  chargeStartDelay: 0.2
+  maxChargeTime: 0.8
+  minChargeToRelease: 0.2
+  deniedHoldTime: 1
+  chargedWindUp: 0.06
+  chargedActiveTime: 0.22
+  chargedRecovery: 0.35
+  chargedRecoverySpeed: 0.3
+  chargedHitboxScale: {x: 1.4, y: 2.6}
+  chargedDistanceMultiplier: 1.5
+  chargedDamage: {x: 2, y: 4}
+  chargedWeaponScale: 2.2
+  chargedKnockbackMultiplier: 1.8
+  chargedFeelMultiplier: 2.2
+  leanBackAngle: 16
+  shakeAmplitude: 0.05
+  shakeRotation: 3
+  shakeFrequency: 40
+  maxBlinkCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -2
+      outSlope: -2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  maxBlinkPeriod: 0.3
 --- !u!114 &1265100496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3793,6 +3892,71 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAim
   originOffset: {x: 0, y: 0}
   cam: {fileID: 519420031}
+--- !u!114 &1265100501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1265100491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d0dcd7923674774ab31cbace8d4575e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChargeAttackMeter
+  blockCount: 5
+  blocksPerKill: 1
+  secondsPerBlockPassive: 0
+  startFull: 1
+  localOffset: {x: 0, y: -0.55}
+  blockSize: {x: 0.2, y: 0.1}
+  blockGap: 0.04
+  padding: 0.04
+  sortingOrderOffset: 20
+  plateColor: {r: 0, g: 0, b: 0, a: 0.55}
+  emptyColor: {r: 1, g: 1, b: 1, a: 0.15}
+  fillColor: {r: 0.4, g: 0.9, b: 1, a: 1}
+  deniedColor: {r: 1, g: 0.15, b: 0.15, a: 0.55}
+  showTime: 1.1
+  fadeSpeed: 8
+  drainTime: 0.4
+  popCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.3636363
+      outSlope: 2.3636363
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.55
+      value: 1.3
+      inSlope: 0.8484849
+      outSlope: 0.8484849
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -0.66666657
+      outSlope: -0.66666657
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  popDuration: 0.35
+  deniedDuration: 0.9
+  deniedShake: 0.06
+  deniedShakeFrequency: 45
 --- !u!1 &1272930118
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,8 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-/// Enemigo de area (bomba). Camina hacia el jugador; al llegar a cierta distancia se queda quieto, parpadea en blanco y explota.
-/// Si lo derrotas, tambien parpadea en blanco unos segundos y explota. La explosion mata al jugador dentro del radio.
 public class AreaEnemy : Enemy
 {
     enum State { Chasing, Fuse }
@@ -58,6 +56,7 @@ public class AreaEnemy : Enemy
     protected override void Defeat(Vector2 direction)
     {
         defeated = true;     // ya no recibe mas golpes
+        NotifyDefeated();
         StartFuse();
     }
 

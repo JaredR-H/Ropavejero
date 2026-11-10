@@ -134,11 +134,7 @@ MonoBehaviour:
     entries:
     - choice: 1
       prefab: {fileID: 8236846055212234296, guid: 77bf924436ee6fe42b9d3fad2cc280c7, type: 3}
-      minCount: 3
-      maxCount: 5
-    - choice: 1
-      prefab: {fileID: 9019098200069841902, guid: 386ffc62498fb3e469310abc1aaad10a, type: 3}
-      minCount: 1
+      minCount: 2
       maxCount: 2
     - choice: 1
       prefab: {fileID: 1902051153958463337, guid: 49f471da968f29245965492c8c02e2c5, type: 3}

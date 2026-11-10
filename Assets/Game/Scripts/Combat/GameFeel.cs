@@ -56,6 +56,7 @@ public class GameFeel : MonoBehaviour
     bool frozen;
     bool controllingTime;
 
+    /// Posicion "de reposo" de la camara. GameManager la mueve al cambiar de sala.
     public Vector3 CameraBase
     {
         get => camBase;
@@ -79,14 +80,16 @@ public class GameFeel : MonoBehaviour
     void OnDestroy()
     {
         if (Instance == this) Instance = null;
-        ReleaseTime();
+        ReleaseTime();     // nunca dejar el juego en camara lenta al cambiar de escena
     }
 
     // ---------- Efectos sueltos ----------
-    public void EnemyHit(Vector2 direction)
+    /// El jugador golpeo a un enemigo: shake sutil + hitstop.
+    /// intensity multiplica el shake y el hitstop (por ejemplo, el ataque cargado pega mas fuerte).
+    public void EnemyHit(Vector2 direction, float intensity = 1f)
     {
-        AddShake(enemyHitTrauma, direction);
-        HitStop(enemyHitStop);
+        AddShake(enemyHitTrauma * intensity, direction);
+        HitStop(enemyHitStop * intensity);
     }
 
     /// Explosion con los valores por defecto de este componente.
@@ -122,6 +125,8 @@ public class GameFeel : MonoBehaviour
     }
 
     // ---------- Muerte del jugador ----------
+    /// hitstop -> camara lenta con zoom y shake -> tiempo congelado hasta Release().
+    /// GameManager lo llama con "yield return" y despues espera el retardo de reaparicion.
     public IEnumerator DeathSequence(Transform target, Vector2 hitDirection)
     {
         zoomFocus = target;

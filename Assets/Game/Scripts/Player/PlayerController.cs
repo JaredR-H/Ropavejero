@@ -4,9 +4,6 @@ using UnityEngine.InputSystem;
 
 public enum FacingDirection { Down, Up, Left, Right }
 
-/// Movimiento top-down + dash + salto falso + empuje (knockback) y orientacion del sprite.
-/// Controles: WASD / flechas = mover, Espacio = dash, C = salto falso, mouse = hacia donde mira y ataca.
-/// Si el hijo "Visual" tiene un Animator, las animaciones eligen el sprite y este script solo voltea (flipX).
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
@@ -64,6 +61,7 @@ public class PlayerController : MonoBehaviour
     public bool IsAirborne { get; private set; }
     public bool IsDashing { get; private set; }
     public bool IsInvulnerable => IsDashing && dashIsInvulnerable;
+    public JuiceAnimator Juice => juice;
     public float SpeedMultiplier { get; set; } = 1f;
     public Vector2 LastMoveDirection { get; private set; } = Vector2.down;
 
