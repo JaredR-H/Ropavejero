@@ -29,9 +29,9 @@ Transform:
   m_GameObject: {fileID: 842677917965285302}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.07, y: -2.19, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6357216169528123426}
   - {fileID: 6860113988280144452}
@@ -187,13 +187,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4208351817395116332}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
   m_LocalPosition: {x: 0.0000000074506, y: -0.11, z: 0}
-  m_LocalScale: {x: 0.45199, y: 0.45199, z: 0.45199}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6528042755550585489}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!212 &8834394822213530479
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -241,7 +241,7 @@ SpriteRenderer:
   m_SortingLayerID: -595846255
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 5411a49e60a44c8448f2adf81c16de8c, type: 3}
+  m_Sprite: {fileID: 6044230976288043858, guid: 2e5df1867cda2444abb1dddd3a8e4ba1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -267,6 +267,7 @@ MonoBehaviour:
   profile: {fileID: 11400000, guid: 09b95e6faab46ea4b92fa2a15205074b, type: 2}
   intensity: 1
   useUnscaledTime: 0
+  playLoops: 1
 --- !u!1 &8622522103907697637
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,6 +320,43 @@ MonoBehaviour:
   distance: 0.8
   turnSpeed: 540
   flipWhenAimingLeft: 1
+  chargeBackAngle: 55
+  chargeShake: 2.5
+  strikeAngle: 70
+  strikeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1.9636364
+      outSlope: 1.9636364
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.55
+      value: 1.08
+      inSlope: 0.89292926
+      outSlope: 0.89292926
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -0.17777787
+      outSlope: -0.17777787
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  returnTime: 0.25
 --- !u!1001 &3045126243166011145
 PrefabInstance:
   m_ObjectHideFlags: 0
