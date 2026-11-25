@@ -13,6 +13,8 @@ public class ArrowTrap : MonoBehaviour, IResettable
     [SerializeField] float interval = 2.5f;
     [SerializeField] float telegraphTime = 0.5f;
     [SerializeField] SpriteRenderer emitterRenderer;
+    [Tooltip("Tamano de la nube de polvo al disparar (0 = sin polvo).")]
+    [SerializeField] float fireDustScale = 0.6f;
 
     [Header("Sprites del emisor (vacío = sprite del SpriteRenderer)")]
     [SerializeField] Sprite idleSprite;
@@ -63,6 +65,7 @@ public class ArrowTrap : MonoBehaviour, IResettable
         var arrow = Instantiate(arrowPrefab, spawnPoint.position, Quaternion.identity, transform.parent);
         arrow.Launch(direction, arrowSpeed);
         liveArrows.Add(arrow);
+        if (fireDustScale > 0f) Vfx.Play(VfxKind.Dust, spawnPoint.position, direction, fireDustScale);
     }
 
     void OnDrawGizmosSelected()

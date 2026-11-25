@@ -114,10 +114,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   maxHealth: 3
   moveSpeed: 4
+  accelerationTime: 0.12
+  decelerationTime: 0.15
   wakeDelay: 0.6
   knockbackForce: 9
   knockbackDecay: 32
   hitStun: 0.02
+  hitFeelBoost: 1.3
+  defeatHideDelay: 0.1
+  hitVfxScale: 1
+  hitFlashTime: 0.1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 64
+  avoidLookAhead: 1.2
+  steerRays: 16
+  steerTurnSpeed: 10
+  stuckTime: 0.4
+  detourTime: 0.8
+  ignoreOtherEnemies: 1
+  separationRadius: 0.9
+  separationWeight: 0.8
   harmlessWhileWaking: 1
   sr: {fileID: 8834394822213530479}
   flasher: {fileID: 1990967822260913429}

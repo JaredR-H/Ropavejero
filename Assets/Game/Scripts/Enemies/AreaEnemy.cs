@@ -43,7 +43,7 @@ public class AreaEnemy : Enemy
         if (toPlayer.sqrMagnitude < 0.0001f) return Vector2.zero;
 
         FaceDirection(toPlayer);
-        return toPlayer.normalized * moveSpeed;
+        return Navigate(toPlayer) * moveSpeed;     // rodea rocas y paredes
     }
 
     protected override void Tick(float dt)
@@ -99,6 +99,8 @@ public class AreaEnemy : Enemy
 
         if (explosionPrefab != null)
             Destroy(Instantiate(explosionPrefab, center, Quaternion.identity), explosionEffectLifetime);
+        else
+            Vfx.Play(VfxKind.Explosion, center, Vector2.zero, explosionRadius / 2.2f);   // explosion por defecto del VfxManager
         if (GameFeel.Instance != null) GameFeel.Instance.Explosion(explosionShake, explosionHitStop);
 
         foreach (var col in Physics2D.OverlapCircleAll(center, explosionRadius))

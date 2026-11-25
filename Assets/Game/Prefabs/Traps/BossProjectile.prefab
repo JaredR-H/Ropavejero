@@ -16,33 +16,13 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-    - target: {fileID: 2789018784781906227, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
-      propertyPath: m_Size.x
-      value: 4.1528955
-      objectReference: {fileID: 0}
-    - target: {fileID: 2789018784781906227, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
-      propertyPath: m_Size.y
-      value: 2.0833366
-      objectReference: {fileID: 0}
-    - target: {fileID: 2789018784781906227, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
-      propertyPath: m_Offset.x
-      value: -0.4148543
-      objectReference: {fileID: 0}
-    - target: {fileID: 2789018784781906227, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
-      propertyPath: m_Offset.y
-      value: -0.07054219
-      objectReference: {fileID: 0}
-    - target: {fileID: 2789018784781906227, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 3.58
-      objectReference: {fileID: 0}
-    - target: {fileID: 2789018784781906227, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 1.62
+    - target: {fileID: 2509496617507871126, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
+      propertyPath: destroyOnLayers.m_Bits
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 4886895228008864873, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
       propertyPath: m_Name
-      value: Arrow Variant 1
+      value: CoyongoProjectile
       objectReference: {fileID: 0}
     - target: {fileID: 5384944784573587738, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
       propertyPath: m_LocalScale.x
