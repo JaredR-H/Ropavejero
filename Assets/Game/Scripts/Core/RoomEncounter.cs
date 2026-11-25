@@ -26,12 +26,7 @@ public class Wave
     public WaveEntry[] entries;
 }
 
-/// Oleadas de enemigos de una sala. Va en un objeto dentro del Room (normalmente una sala de tipo Puzzle).
-/// Flujo: el jugador entra -> se bloquean las puertas -> aparece la oleada -> se derrotan todos -> aparece la siguiente
-/// -> sin mas oleadas -> la sala queda COMPLETADA y las puertas "Always Open" se vuelven a abrir.
-/// Una sala completada no vuelve a generar enemigos al salir y volver a entrar.
-/// Si el jugador muere antes de completarla, las oleadas empiezan de nuevo.
-public class RoomEncounter : MonoBehaviour, IResettable
+public class RoomEncounter : MonoBehaviour, IResettable, IRoomObjective
 {
     [Header("Enemigos al azar")]
     [Tooltip("Lista de la que salen los enemigos con Choice = Random.")]
@@ -65,13 +60,13 @@ public class RoomEncounter : MonoBehaviour, IResettable
     readonly HashSet<Transform> usedPoints = new HashSet<Transform>();
 
     public bool Completed { get; private set; }
+    public bool IsDone => Completed;
     public bool IsRunning => running != null;
 
     static bool GameIsPlaying => GameManager.Instance == null || GameManager.Instance.IsPlaying;
 
     void Awake() => room = GetComponentInParent<Room>();
 
-    /// La llama Room cuando el jugador entra (o reaparece en la sala).
     public void Begin()
     {
         if (Completed || running != null) return;
@@ -82,7 +77,6 @@ public class RoomEncounter : MonoBehaviour, IResettable
             return;
         }
 
-        if (room != null) room.SetEncounterDoorsLocked(true);
         running = StartCoroutine(RunWaves());
     }
 
@@ -96,7 +90,6 @@ public class RoomEncounter : MonoBehaviour, IResettable
             yield return WaitPlaying(wave.delayBefore);
             yield return SpawnWave(wave);
 
-            // Hasta que no quede ninguno de la oleada, no hay siguiente.
             while (CountAlive() > 0) yield return null;
         }
 
@@ -214,8 +207,8 @@ public class RoomEncounter : MonoBehaviour, IResettable
         Completed = true;
         running = null;
         DestroySpawned();
-        if (room != null) room.SetEncounterDoorsLocked(false);
         onCompleted?.Invoke();
+        if (room != null) room.ObjectiveCompleted(this);     // la sala se completa cuando estan todos los objetivos
     }
 
     void DestroySpawned()

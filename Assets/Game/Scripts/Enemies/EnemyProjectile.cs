@@ -12,6 +12,8 @@ public class EnemyProjectile : MonoBehaviour
     [SerializeField] LayerMask destroyOnLayers;
     [Tooltip("Gira el sprite hacia donde va. Dibujalo apuntando a la DERECHA.")]
     [SerializeField] bool rotateToDirection = true;
+    [Tooltip("Tamano de las chispas al chocar con una pared o con el jugador.")]
+    [SerializeField] float impactScale = 0.7f;
 
     Rigidbody2D rb;
 
@@ -44,11 +46,15 @@ public class EnemyProjectile : MonoBehaviour
         if (other.TryGetComponent(out PlayerHealth _))
         {
             HazardUtil.TryKillPlayer(other, transform.position, canBeJumpedOver);
+            Vfx.Play(VfxKind.Impact, transform.position, -rb.linearVelocity, impactScale);
             Destroy(gameObject);
             return;
         }
 
         if (((1 << other.gameObject.layer) & destroyOnLayers.value) != 0)
+        {
+            Vfx.Play(VfxKind.Impact, transform.position, -rb.linearVelocity, impactScale);
             Destroy(gameObject);
+        }
     }
 }

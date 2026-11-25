@@ -6,7 +6,7 @@ public class MeleeEnemy : Enemy
 
     [Header("Ataque")]
     [Tooltip("Distancia al jugador a la que empieza a cargar el ataque.")]
-    [SerializeField] float attackDistance = 1.8f;
+    [SerializeField] float attackDistance = 1.3f;
     [Tooltip("Tiempo de carga. Corto = poco tiempo para reaccionar.")]
     [SerializeField] float chargeTime = 0.3f;
     [SerializeField] float strikeTime = 0.22f;
@@ -17,8 +17,8 @@ public class MeleeEnemy : Enemy
     [Tooltip("En que punto del golpe (0 a 1) hace dano.")]
     [SerializeField, Range(0f, 1f)] float hitMoment = 0.35f;
     [Tooltip("Centro del golpe: distancia desde el enemigo hacia el jugador.")]
-    [SerializeField] float attackReach = 1.1f;
-    [SerializeField] float attackRadius = 0.85f;
+    [SerializeField] float attackReach = 0.8f;
+    [SerializeField] float attackRadius = 0.55f;
     [SerializeField] bool alsoKillsOnContact = true;
 
     [Header("Animacion")]
@@ -99,7 +99,7 @@ public class MeleeEnemy : Enemy
                 Vector2 toPlayer = PlayerPosition - rb.position;
                 if (toPlayer.sqrMagnitude < 0.0001f) return Vector2.zero;
                 FaceDirection(toPlayer);
-                return toPlayer.normalized * moveSpeed;
+                return Navigate(toPlayer) * moveSpeed;     // rodea rocas y paredes
 
             case State.Striking:
                 // Empujon corto hacia el jugador durante la primera parte del golpe

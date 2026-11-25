@@ -56,6 +56,8 @@ public class RoomDoor : MonoBehaviour, IResettable
     [Tooltip("Opcional: objeto que se anima con el squash & stretch al abrirse o cerrarse (por ejemplo, un hijo solo con el sprite, " +
              "para que el collider no cambie de tamano). Si esta vacio se anima la propia puerta.")]
     [SerializeField] Transform visualTarget;
+    [Tooltip("Tamano de la nube de polvo al abrirse o cerrarse (0 = sin polvo).")]
+    [SerializeField] float dustScale = 1.2f;
 
     [Header("Lado")]
     [Tooltip("En que lado de la sala esta esta puerta (Up, Down, Left, Right).")]
@@ -73,11 +75,13 @@ public class RoomDoor : MonoBehaviour, IResettable
     bool shownInit;
     bool baseLocked = true;
     bool encounterLocked;
+    bool gateLocked;          // la sala de al lado pide todos los objetos y aun faltan
 
     public DoorRole Role => role;
     public bool AlwaysOpen => alwaysOpen;
     public DoorSide Side => side;
-    public bool IsLocked => baseLocked || encounterLocked;
+    public bool IsLocked => baseLocked || encounterLocked || gateLocked;
+    public bool IsGateLocked => gateLocked;
 
     void Awake()
     {
@@ -119,6 +123,21 @@ public class RoomDoor : MonoBehaviour, IResettable
         Apply();
     }
 
+    /// Cerrada porque al otro lado esta el jefe y faltan objetos. animate = squash & stretch y polvo al cambiar.
+    public void SetGateLocked(bool locked, bool animate)
+    {
+        if (gateLocked == locked) return;
+        gateLocked = locked;
+        Apply(animate);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!gateLocked) return;
+        if (!collision.collider.TryGetComponent(out PlayerController _)) return;
+        if (GameManager.Instance != null) GameManager.Instance.OnGateBlocked();
+    }
+
     public void SetEncounterLocked(bool locked)
     {
         encounterLocked = locked;
@@ -139,8 +158,11 @@ public class RoomDoor : MonoBehaviour, IResettable
         if (swapper != null) swapper.Show(locked ? lockedSprite : unlockedSprite);
 
         // Squash & stretch cuando la puerta se desbloquea o se bloquea
-        if (animate && shownInit && locked != shownLocked && juice != null && isActiveAndEnabled)
-            juice.Play(locked ? "DoorLock" : "DoorUnlock");
+        if (animate && shownInit && locked != shownLocked && isActiveAndEnabled)
+        {
+            if (juice != null) juice.Play(locked ? "DoorLock" : "DoorUnlock");
+            if (dustScale > 0f) Vfx.Play(VfxKind.Dust, transform.position, Vector2.up, dustScale);
+        }
 
         shownLocked = locked;
         shownInit = true;

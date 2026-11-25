@@ -12,6 +12,9 @@ public class SpriteFlasher : MonoBehaviour
     static readonly int FlashAmountId = Shader.PropertyToID("_FlashAmount");
     static Material defaultMaterial;
     static bool defaultTried;
+    static Material solidMaterial;      // plan B sin el shader: silueta de un solo color
+    static bool solidTried;
+    static bool warned;
 
     Material originalMaterial;
     Color originalColor;
@@ -40,6 +43,22 @@ public class SpriteFlasher : MonoBehaviour
         }
     }
 
+    // "GUI/Text Shader" pinta el sprite como silueta del color del SpriteRenderer: sirve de destello blanco si falta el shader.
+    static Material SolidMaterial
+    {
+        get
+        {
+            if (!solidTried)
+            {
+                solidTried = true;
+                Shader shader = Shader.Find("GUI/Text Shader");
+                if (shader != null)
+                    solidMaterial = new Material(shader) { name = "SpriteFlash solid (auto)", hideFlags = HideFlags.HideAndDontSave };
+            }
+            return solidMaterial;
+        }
+    }
+
     void Awake() => Capture();
 
     void Capture()
@@ -51,6 +70,12 @@ public class SpriteFlasher : MonoBehaviour
         originalMaterial = sr.sharedMaterial;
         originalColor = sr.color;
         if (flashMaterial == null) flashMaterial = DefaultMaterial;
+        if (flashMaterial == null && !warned)
+        {
+            warned = true;
+            Debug.LogWarning("SpriteFlasher: no encontre el shader 'Ropavejero/SpriteFlash'. Uso una silueta blanca de respaldo. " +
+                             "Para el destello completo (y para la build) crea un material con ese shader y asignalo en 'Flash Material'.", this);
+        }
         captured = true;
     }
 
@@ -81,6 +106,15 @@ public class SpriteFlasher : MonoBehaviour
             sr.GetPropertyBlock(block);                 // conserva la textura del sprite
             block.SetFloat(FlashAmountId, amount);
             sr.SetPropertyBlock(block);
+        }
+        else if (SolidMaterial != null)
+        {
+            // Plan B: silueta blanca (sin degradado: por encima de la mitad se ve blanco)
+            bool on = amount > 0.35f;
+            Material wanted = on ? SolidMaterial : originalMaterial;
+            if (sr.sharedMaterial != wanted) sr.sharedMaterial = wanted;
+            Color c = on ? new Color(1f, 1f, 1f, originalColor.a) : originalColor;
+            sr.color = c;
         }
         else
         {

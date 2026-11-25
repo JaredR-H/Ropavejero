@@ -16,9 +16,13 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 2509496617507871126, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
+      propertyPath: destroyOnLayers.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 4886895228008864873, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
       propertyPath: m_Name
-      value: Projectile
+      value: Arrow Trap Projectile
       objectReference: {fileID: 0}
     - target: {fileID: 5384944784573587738, guid: 26e229e5b26fe2d489f86b31bd94ec71, type: 3}
       propertyPath: m_LocalScale.x

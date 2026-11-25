@@ -18,6 +18,12 @@ public class WeaponVisual : MonoBehaviour
     [Tooltip("Voltea el sprite en vertical al apuntar a la izquierda para que no quede de cabeza.")]
     [SerializeField] bool flipWhenAimingLeft = true;
 
+    [Header("Aparecer / desaparecer")]
+    [Tooltip("Segundos que tarda el arma en aparecer o guardarse.")]
+    [SerializeField] float appearTime = 0.18f;
+    [Tooltip("Tamano del arma al aparecer: tiempo (0 a 1) en X, tamano (0 a 1) en Y. Pasarse de 1 da un pequeno rebote.")]
+    [SerializeField] AnimationCurve appearCurve = DefaultAppearCurve();
+
     [Header("Ataque cargado")]
     [Tooltip("Cuanto se echa hacia atras la espada con la carga al maximo (grados).")]
     [SerializeField] float chargePullAngle = 75f;
@@ -34,6 +40,23 @@ public class WeaponVisual : MonoBehaviour
     int swingSign = 1;
     Coroutine swing;
     Vector3 baseWeaponScale = Vector3.one;
+    bool shown = true;
+    float showT = 1f;
+
+    static AnimationCurve DefaultAppearCurve()
+    {
+        var curve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.65f, 1.18f), new Keyframe(1f, 1f));
+        for (int i = 0; i < curve.length; i++) curve.SmoothTangents(i, 0f);
+        return curve;
+    }
+
+    /// Muestra u oculta el arma (con un pequeno rebote al aparecer).
+    public void SetVisible(bool visible, bool instant = false)
+    {
+        shown = visible;
+        if (instant) showT = visible ? 1f : 0f;
+        if (!visible) CancelSwing();
+    }
 
     static AnimationCurve DefaultSwingCurve()
     {
@@ -83,8 +106,13 @@ public class WeaponVisual : MonoBehaviour
 
         if (weaponRenderer == null) return;
 
+        // Aparecer / guardarse
+        showT = Mathf.MoveTowards(showT, shown ? 1f : 0f, Time.unscaledDeltaTime / Mathf.Max(0.01f, appearTime));
+        float pop = shown ? appearCurve.Evaluate(showT) : showT * showT;
+        weaponRenderer.enabled = showT > 0.001f;
+
         weaponRenderer.transform.localPosition = new Vector3(distance * Mathf.Lerp(1f, scaleFactor, 0.6f), 0f, 0f);
-        weaponRenderer.transform.localScale = baseWeaponScale * scaleFactor;
+        weaponRenderer.transform.localScale = baseWeaponScale * scaleFactor * pop;
         if (flipWhenAimingLeft) weaponRenderer.flipY = Mathf.Abs(angle) > 90f;
 
         if (playerRenderer != null)

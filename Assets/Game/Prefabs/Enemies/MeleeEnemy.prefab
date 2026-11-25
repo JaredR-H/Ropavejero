@@ -223,7 +223,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6285278361872993970}
@@ -299,6 +299,7 @@ GameObject:
   - component: {fileID: 1617382034873390568}
   - component: {fileID: 8236846055212234296}
   - component: {fileID: 7372673401672454983}
+  - component: {fileID: 4749596505333459112}
   m_Layer: 0
   m_Name: MeleeEnemy
   m_TagString: Untagged
@@ -400,25 +401,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MeleeEnemy
   maxHealth: 3
   moveSpeed: 3
+  accelerationTime: 0.12
+  decelerationTime: 0.15
   wakeDelay: 0.6
   knockbackForce: 9
   knockbackDecay: 32
   hitStun: 0.18
+  hitFeelBoost: 1.3
+  defeatHideDelay: 0.1
+  hitVfxScale: 1
+  defeatPoofScale: 1.5
+  hitFlashTime: 0.1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 64
+  avoidLookAhead: 1.2
+  steerRays: 16
+  steerTurnSpeed: 10
+  stuckTime: 0.4
+  detourTime: 0.8
+  ignoreOtherEnemies: 1
+  separationRadius: 0.9
+  separationWeight: 0.8
   harmlessWhileWaking: 1
   sr: {fileID: 1634238918533332171}
   flasher: {fileID: 7372673401672454983}
   juice: {fileID: 4370173956178595001}
   faceMoveDirection: 1
   defeatEffect: {fileID: 0}
-  attackDistance: 1.8
+  attackDistance: 1.3
   chargeTime: 0.5
   strikeTime: 0.22
   recoverTime: 0.45
   lungeSpeed: 6
   hitMoment: 0.45
-  attackReach: 1.1
-  attackRadius: 0.85
-  alsoKillsOnContact: 1
+  attackReach: 0.8
+  attackRadius: 0.55
+  alsoKillsOnContact: 0
   sword: {fileID: 1332502897895117155}
   chargeIntensity: 0.6
   strikeIntensity: 1
@@ -437,3 +456,19 @@ MonoBehaviour:
   sr: {fileID: 1634238918533332171}
   flashMaterial: {fileID: 2100000, guid: 36dc90cc7c3dd424ea1c02538568f051, type: 2}
   fallbackColor: {r: 1, g: 1, b: 1, a: 0.35}
+--- !u!114 &4749596505333459112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908056504623939726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e473fd72209b5b843ace76a25532c704, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DustTrail
+  feetOffset: {x: 0, y: -0.05}
+  stepDistance: 0.6
+  minSpeed: 1
+  puffScale: 0.45

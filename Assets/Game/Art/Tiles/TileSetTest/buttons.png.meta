@@ -1,0 +1,480 @@
+fileFormatVersion: 2
+guid: 9bd20edcd5773214caf367b568a89a58
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8191739510646017925
+    second: buttons_0
+  - first:
+      213: 3713549098536957005
+    second: buttons_1
+  - first:
+      213: -480254276019886394
+    second: buttons_2
+  - first:
+      213: -6460607209241108654
+    second: buttons_3
+  - first:
+      213: 2958514102543403041
+    second: buttons_4
+  - first:
+      213: 1008705478319212569
+    second: buttons_5
+  - first:
+      213: -3219683103784253410
+    second: buttons_6
+  - first:
+      213: 5830344958925785552
+    second: buttons_7
+  - first:
+      213: 650656284835190746
+    second: buttons_8
+  - first:
+      213: 4009284081192125275
+    second: buttons_9
+  - first:
+      213: 8359661988393023892
+    second: buttons_10
+  - first:
+      213: -7138311499508957143
+    second: buttons_11
+  - first:
+      213: -9124727645642988533
+    second: buttons_12
+  - first:
+      213: -2986871994705294210
+    second: buttons_13
+  - first:
+      213: -7237472072382729174
+    second: buttons_14
+  - first:
+      213: -8315295956674182197
+    second: buttons_15
+  - first:
+      213: -77006150763170147
+    second: buttons_16
+  - first:
+      213: 7174167584646727459
+    second: buttons_17
+  - first:
+      213: 6506343174705358099
+    second: buttons_18
+  - first:
+      213: 3349644112325863184
+    second: buttons_19
+  - first:
+      213: 8864463547421281627
+    second: buttons_20
+  - first:
+      213: 1654285022694055569
+    second: buttons_21
+  - first:
+      213: 6195944701763404407
+    second: buttons_22
+  - first:
+      213: -2381909340392218158
+    second: buttons_23
+  - first:
+      213: 4116711184687805582
+    second: buttons_24
+  - first:
+      213: -4593533388180513840
+    second: buttons_25
+  - first:
+      213: -6569476227874363533
+    second: buttons_26
+  - first:
+      213: -7173023993303075856
+    second: buttons_27
+  - first:
+      213: -7752543883522589242
+    second: buttons_28
+  - first:
+      213: -1058752386943646202
+    second: buttons_29
+  - first:
+      213: 1292944054767224858
+    second: buttons_30
+  - first:
+      213: 3443885846195075332
+    second: buttons_31
+  - first:
+      213: -3284123783961330267
+    second: buttons_32
+  - first:
+      213: 898765121896881095
+    second: buttons_33
+  - first:
+      213: -6202158137699133530
+    second: buttons_34
+  - first:
+      213: 3649682668872729836
+    second: buttons_35
+  - first:
+      213: -9010618283849265056
+    second: buttons_36
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: RedOff
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 610
+        width: 353
+        height: 270
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7079671158115e80800000000000000
+      internalID: -8191739510646017925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YellowOff
+      rect:
+        serializedVersion: 2
+        x: 401
+        y: 610
+        width: 353
+        height: 270
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c6e8fbc74bc559f0800000000000000
+      internalID: -480254276019886394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GreenOff
+      rect:
+        serializedVersion: 2
+        x: 1164
+        y: 610
+        width: 353
+        height: 270
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9180536c944affd00800000000000000
+      internalID: 1008705478319212569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlueOff
+      rect:
+        serializedVersion: 2
+        x: 783
+        y: 610
+        width: 353
+        height: 270
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0463491d847e5180800000000000000
+      internalID: -9124727645642988533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RedOn
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 132
+        width: 354
+        height: 270
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7724294f0ea6cf550800000000000000
+      internalID: 6195944701763404407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YellowOn
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 132
+        width: 354
+        height: 270
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d1acb62312c1fed0800000000000000
+      internalID: -2381909340392218158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlueOn
+      rect:
+        serializedVersion: 2
+        x: 783
+        y: 132
+        width: 354
+        height: 270
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cd3205a96e696490800000000000000
+      internalID: -7752543883522589242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GreenOn
+      rect:
+        serializedVersion: 2
+        x: 1166
+        y: 132
+        width: 353
+        height: 270
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce40f0dec0746a230800000000000000
+      internalID: 3649682668872729836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 2f441fc9fcaaa2b48a4e0128830b5b07
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BlueOff: -9124727645642988533
+      BlueOn: -7752543883522589242
+      GreenOff: 1008705478319212569
+      GreenOn: 3649682668872729836
+      RedOff: -8191739510646017925
+      RedOn: 6195944701763404407
+      YellowOff: -480254276019886394
+      YellowOn: -2381909340392218158
+      buttons_1: 3713549098536957005
+      buttons_10: 8359661988393023892
+      buttons_11: -7138311499508957143
+      buttons_13: -2986871994705294210
+      buttons_14: -7237472072382729174
+      buttons_15: -8315295956674182197
+      buttons_16: -77006150763170147
+      buttons_17: 7174167584646727459
+      buttons_18: 6506343174705358099
+      buttons_19: 3349644112325863184
+      buttons_20: 8864463547421281627
+      buttons_21: 1654285022694055569
+      buttons_24: 4116711184687805582
+      buttons_25: -4593533388180513840
+      buttons_26: -6569476227874363533
+      buttons_27: -7173023993303075856
+      buttons_29: -1058752386943646202
+      buttons_3: -6460607209241108654
+      buttons_30: 1292944054767224858
+      buttons_31: 3443885846195075332
+      buttons_32: -3284123783961330267
+      buttons_33: 898765121896881095
+      buttons_34: -6202158137699133530
+      buttons_36: -9010618283849265056
+      buttons_4: 2958514102543403041
+      buttons_6: -3219683103784253410
+      buttons_7: 5830344958925785552
+      buttons_8: 650656284835190746
+      buttons_9: 4009284081192125275
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

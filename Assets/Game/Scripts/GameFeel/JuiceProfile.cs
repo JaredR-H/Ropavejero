@@ -72,16 +72,16 @@ public class JuiceProfile : ScriptableObject
         yOffsetAmount = 0f
     };
 
-    [Header("Caminar: se nota mas el balanceo y el squash & stretch")]
+    [Header("Caminar: balanceo y squash & stretch continuos (con SpriteStepAnimator el squash lo hace cada paso)")]
     public LoopMotion move = new LoopMotion
     {
-        period = 0.42f,
+        period = 0.8f,
         stretch = JuiceCurves.Sine(2f),
-        stretchAmount = 0.09f,
+        stretchAmount = 0.07f,
         rotation = JuiceCurves.Sine(1f),
-        rotationAmount = 5f,
+        rotationAmount = 4f,
         yOffset = JuiceCurves.Hop(2f),
-        yOffsetAmount = 0.05f
+        yOffsetAmount = 0.04f
     };
 
     [Tooltip("Que tan rapido se pasa de reposo a caminar y al reves.")]
@@ -134,6 +134,17 @@ public static class JuiceCurves
     {
         return new[]
         {
+            // Paso (SpriteStepAnimator): se estira al despegar, sube un poquito y se aplasta al apoyar el pie
+            new ShotMotion
+            {
+                name = "Step", duration = 0.26f, axis = JuiceAxis.Vertical, preserveVolume = true,
+                stretch = FromFunction(x => x < 0.55f
+                    ? 0.7f * Mathf.Sin(Mathf.PI * x / 0.55f)
+                    : -Mathf.Sin(Mathf.PI * (x - 0.55f) / 0.45f), 32),
+                stretchAmount = 0.12f,
+                yOffset = FromFunction(x => x < 0.6f ? Mathf.Sin(Mathf.PI * x / 0.6f) : 0f, 32),
+                yOffsetAmount = 0.08f
+            },
             // Dash: estiramiento pronunciado al arrancar que se relaja, con un pequeno aplastamiento al final
             new ShotMotion
             {
@@ -307,6 +318,38 @@ public static class JuiceCurves
                     ? Mathf.Lerp(1f, -1.2f, Mathf.SmoothStep(0f, 1f, x / 0.35f))
                     : Mathf.Lerp(-1.2f, 0f, Mathf.SmoothStep(0f, 1f, (x - 0.35f) / 0.65f)), 40),
                 rotationAmount = 18f
+            },
+
+            // ---- Jefe ----
+
+            // Invocar: se estira hacia arriba (levanta los brazos), se sostiene y vuelve con un rebote
+            new ShotMotion
+            {
+                name = "ArmsUp", duration = 0.8f, axis = JuiceAxis.Vertical, preserveVolume = true,
+                stretch = FromFunction(x => x < 0.25f ? Mathf.SmoothStep(0f, 1f, x / 0.25f)
+                                         : x < 0.7f ? 1f + 0.08f * Mathf.Sin(2f * Mathf.PI * 4f * x)
+                                         : Mathf.Exp(-6f * (x - 0.7f)) * Mathf.Cos(2f * Mathf.PI * 3f * (x - 0.7f)), 48),
+                stretchAmount = 0.22f
+            },
+
+            // Aturdido (el saco fallo): tambaleo de lado a lado
+            new ShotMotion
+            {
+                name = "Stunned", duration = 1f, axis = JuiceAxis.Vertical, preserveVolume = true,
+                stretch = FromFunction(x => -0.5f - 0.5f * Mathf.Abs(Mathf.Sin(2f * Mathf.PI * 2f * x)), 32),
+                stretchAmount = 0.12f,
+                rotation = FromFunction(x => Mathf.Sin(2f * Mathf.PI * 2f * x), 32),
+                rotationAmount = 12f
+            },
+
+            // Saco con alguien dentro que lucha por salir: aplastamiento rapido y temblor
+            new ShotMotion
+            {
+                name = "SackStruggle", duration = 0.22f, axis = JuiceAxis.Vertical, preserveVolume = true,
+                stretch = FromFunction(x => Mathf.Exp(-6f * x) * Mathf.Sin(2f * Mathf.PI * 2f * x), 24),
+                stretchAmount = 0.35f,
+                rotation = FromFunction(x => Mathf.Exp(-5f * x) * Mathf.Sin(2f * Mathf.PI * 3f * x), 24),
+                rotationAmount = 14f
             }
         };
     }

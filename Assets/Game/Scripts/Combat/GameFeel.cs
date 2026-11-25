@@ -28,6 +28,12 @@ public class GameFeel : MonoBehaviour
     [Tooltip("Segundos REALES que dura la camara lenta.")]
     [SerializeField] float deathSlowDuration = 0.55f;
 
+    [Header("Limites de camara (que nunca se vea fuera de la sala)")]
+    [Tooltip("Acerca un poco la camara (0,04 = 4%) para que el shake tenga margen sin mostrar lo que hay fuera de la sala.")]
+    [SerializeField, Range(0f, 0.15f)] float overscan = 0.04f;
+    [Tooltip("Marcado: la camara nunca se sale de la sala actual (con shake, zoom de muerte, etc.).")]
+    [SerializeField] bool clampToRoom = true;
+
     [Header("Shake")]
     [SerializeField] float maxShakeOffset = 0.5f;
     [SerializeField] float shakeFrequency = 22f;
@@ -71,7 +77,7 @@ public class GameFeel : MonoBehaviour
         if (cam != null)
         {
             camBase = cam.transform.position;
-            baseSize = cam.orthographicSize;
+            baseSize = cam.orthographicSize * (1f - overscan);
         }
         seedX = Random.value * 100f;
         seedY = Random.value * 100f;
@@ -229,6 +235,14 @@ public class GameFeel : MonoBehaviour
             offset.y += (Mathf.PerlinNoise(seedY, t) * 2f - 1f) * strength;
         }
 
-        cam.transform.position = new Vector3(pos.x + offset.x, pos.y + offset.y, camBase.z);
+        Vector3 final = new Vector3(pos.x + offset.x, pos.y + offset.y, camBase.z);
+
+        // Dentro de la sala (no durante el deslizamiento entre salas, que si cruza de una a otra)
+        var gm = GameManager.Instance;
+        if (clampToRoom && gm != null && gm.CurrentRoom != null &&
+            (gm.State == GameState.Playing || gm.State == GameState.Dead))
+            final = CameraBounds.Clamp(final, cam.orthographicSize, cam.aspect, gm.CurrentRoom);
+
+        cam.transform.position = final;
     }
 }

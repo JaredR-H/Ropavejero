@@ -7,6 +7,8 @@ public class Arrow : MonoBehaviour
 {
     [SerializeField] LayerMask wallMask;
     [SerializeField] bool hitsAirbornePlayer = true;     // saltar no salva de las flechas
+    [Tooltip("Tamano de las chispas al chocar con una pared.")]
+    [SerializeField] float impactScale = 0.8f;
 
     Rigidbody2D rb;
 
@@ -23,6 +25,8 @@ public class Arrow : MonoBehaviour
     {
         if (((1 << other.gameObject.layer) & wallMask) != 0)
         {
+            Vector2 v = rb != null ? rb.linearVelocity : Vector2.zero;
+            Vfx.Play(VfxKind.Impact, transform.position, -v, impactScale);   // chispas hacia atras, como un rebote
             Destroy(gameObject);
             return;
         }

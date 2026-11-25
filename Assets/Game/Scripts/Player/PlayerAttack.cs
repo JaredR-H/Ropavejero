@@ -20,6 +20,11 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] SlashEffect slashEffect;      // opcional
     [SerializeField] WeaponVisual weapon;          // opcional: el sprite del arma
 
+    [Header("Arma segun la sala")]
+    [Tooltip("Marcado: el arma solo aparece (y solo se puede atacar) donde la sala lo permite (Room > Weapon Rule). " +
+             "Desmarcado: el arma esta siempre.")]
+    [SerializeField] bool weaponDependsOnRoom = true;
+
     [Header("Ataque cargado: carga")]
     [Tooltip("Barra de bloques. Si esta vacio, el ataque cargado siempre esta disponible.")]
     [SerializeField] ChargeAttackMeter meter;
@@ -75,11 +80,19 @@ public class PlayerAttack : MonoBehaviour
     float charge;
     Vector3 baseHitboxScale = Vector3.one;
     Vector3 baseSlashScale = Vector3.one;
+    bool weaponAllowed = true;
+    bool weaponStateKnown;
 
     // Lo leen los enemigos (y otros IHittable) para saber como pega este golpe
     public int CurrentDamage { get; private set; } = 1;
     public float KnockbackMultiplier { get; private set; } = 1f;
     public float HitFeelMultiplier { get; private set; } = 1f;
+
+    /// Esconde el arma pase lo que pase (por ejemplo, atrapado en el saco).
+    public bool ForceHidden { get; set; }
+
+    /// true si ahora mismo el jugador tiene el arma en la mano.
+    public bool WeaponAllowed => weaponAllowed;
 
     static AnimationCurve DefaultBlinkCurve()
     {
@@ -122,6 +135,15 @@ public class PlayerAttack : MonoBehaviour
         bool pressedThisFrame = (kb != null && kb.jKey.wasPressedThisFrame) || (mouse != null && mouse.leftButton.wasPressedThisFrame);
         bool held = (kb != null && kb.jKey.isPressed) || (mouse != null && mouse.leftButton.isPressed);
 
+        // Sin arma en esta sala: no se ve la espada y no se puede atacar
+        UpdateWeaponAllowed();
+        if (!weaponAllowed)
+        {
+            holding = false;
+            holdTimer = 0f;
+            return;
+        }
+
         // Sin control (muerte, transiciones) o en dash: se cancela la carga
         if (!controller.InputEnabled || controller.IsDashing)
         {
@@ -161,6 +183,29 @@ public class PlayerAttack : MonoBehaviour
                 UpdateCharging(held);
                 break;
         }
+    }
+
+    // ---------- Arma segun la sala ----------
+    bool RoomAllowsWeapon()
+    {
+        if (ForceHidden) return false;
+        if (!weaponDependsOnRoom) return true;
+        var gm = GameManager.Instance;
+        if (gm == null || gm.CurrentRoom == null) return true;
+        return gm.CurrentRoom.WeaponAllowed;
+    }
+
+    void UpdateWeaponAllowed()
+    {
+        bool allowed = RoomAllowsWeapon();
+        if (weaponStateKnown && allowed == weaponAllowed) return;
+
+        bool instant = !weaponStateKnown;     // la primera vez, sin animacion
+        weaponStateKnown = true;
+        weaponAllowed = allowed;
+
+        if (!allowed && mode != Mode.Idle) CancelAttack();
+        if (weapon != null) weapon.SetVisible(allowed, instant);
     }
 
     // ---------- Golpe normal ----------

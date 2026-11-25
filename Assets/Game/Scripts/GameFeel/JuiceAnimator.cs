@@ -30,6 +30,8 @@ public class JuiceAnimator : MonoBehaviour
     float idlePhase, movePhase;
     float moveBlend, moveTarget;
     float scaleMul = 1f, scaleTarget = 1f, scaleSpeed = 10f;
+    // Cuanto se aplica del ciclo continuo de caminar (lo baja SpriteStepAnimator, que hace un saltito por paso)
+    float moveLoopStretch = 1f, moveLoopY = 1f, moveLoopRot = 1f;
 
     // Efecto manual (por ejemplo la carga de un ataque): lo controla otro script cada frame
     bool overlayActive;
@@ -106,6 +108,14 @@ public class JuiceAnimator : MonoBehaviour
     // ---------- Control ----------
     /// 0 = reposo, 1 = caminando. Se mezcla suavemente.
     public void SetMove(float amount) => moveTarget = Mathf.Clamp01(amount);
+
+    /// Multiplica el ciclo CONTINUO de caminar: squash & stretch, saltito y balanceo (1 = normal, 0 = apagado).
+    public void SetMoveLoopScale(float stretch, float yOffset, float rotation)
+    {
+        moveLoopStretch = Mathf.Max(0f, stretch);
+        moveLoopY = Mathf.Max(0f, yOffset);
+        moveLoopRot = Mathf.Max(0f, rotation);
+    }
 
     /// Tamano permanente (1 = normal) al que se acerca con suavidad: crecer al pasar el mouse, aviso de poco tiempo...
     public void SetScaleMultiplier(float target, float speed = 10f)
@@ -202,8 +212,8 @@ public class JuiceAnimator : MonoBehaviour
 
         if (playLoops)
         {
-            AddLoop(active.idle, idlePhase, 1f - moveBlend, ref fx, ref fy, ref rot, ref y);
-            AddLoop(active.move, movePhase, moveBlend, ref fx, ref fy, ref rot, ref y);
+            AddLoop(active.idle, idlePhase, 1f - moveBlend, 1f, 1f, 1f, ref fx, ref fy, ref rot, ref y);
+            AddLoop(active.move, movePhase, moveBlend, moveLoopStretch, moveLoopY, moveLoopRot, ref fx, ref fy, ref rot, ref y);
         }
 
         // Tamano permanente (hover, urgencia...)
@@ -247,13 +257,14 @@ public class JuiceAnimator : MonoBehaviour
         Apply(Mathf.Clamp(fx, 0.01f, 3f), Mathf.Clamp(fy, 0.01f, 3f), rot, x, y);
     }
 
-    void AddLoop(LoopMotion m, float phase, float weight, ref float fx, ref float fy, ref float rot, ref float y)
+    void AddLoop(LoopMotion m, float phase, float weight, float stretchMul, float yMul, float rotMul,
+                 ref float fx, ref float fy, ref float rot, ref float y)
     {
         if (weight <= 0.0001f) return;
         float k = weight * intensity;
-        AddStretch(m.stretch.Evaluate(phase) * m.stretchAmount * k, false, true, 3f, ref fx, ref fy);
-        rot += m.rotation.Evaluate(phase) * m.rotationAmount * k;
-        y += m.yOffset.Evaluate(phase) * m.yOffsetAmount * k;
+        AddStretch(m.stretch.Evaluate(phase) * m.stretchAmount * k * stretchMul, false, true, 3f, ref fx, ref fy);
+        rot += m.rotation.Evaluate(phase) * m.rotationAmount * k * rotMul;
+        y += m.yOffset.Evaluate(phase) * m.yOffsetAmount * k * yMul;
     }
 
     // maxCross limita cuanto se ensancha el otro eje al conservar el volumen (asi se puede aplastar casi hasta una linea

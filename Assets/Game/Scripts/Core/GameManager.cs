@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] PlayerController player;
     [SerializeField] Camera mainCamera;
     [SerializeField] UIManager ui;
-    [SerializeField] IrisTransition iris;          // opcional: solo se usa al empezar la partida
+    [SerializeField] IrisTransition iris;
     [Tooltip("Opcional: dirige la camara (shake, zoom), el hitstop, la camara lenta y el congelado al morir. Sin el, el juego funciona sin esos efectos.")]
     [SerializeField] GameFeel gameFeel;
     [Tooltip("Opcional: fundido a negro lento al reiniciar. Si esta vacio se usa el ScreenFader de la escena (si hay).")]
@@ -26,6 +26,9 @@ public class GameManager : MonoBehaviour
     [Tooltip("Si esta activo, al morir en una trampa el tiempo de la sala vuelve a empezar.")]
     [SerializeField] bool resetTimerOnDeath = true;
     [SerializeField] float respawnDelay = 0.6f;
+    [Tooltip("Segundos de invulnerabilidad (parpadeo blanco) al reaparecer tras morir. " +
+             "Si la sala tiene su propio 'Respawn Invulnerability' mayor que 0 (p. ej. la del jefe), se usa el de la sala.")]
+    [SerializeField, Min(0f)] float respawnInvulnerability = 1.5f;
     [Tooltip("Tras entrar a una sala se ignoran las puertas este tiempo, para no rebotar de vuelta.")]
     [SerializeField] float doorCooldown = 0.4f;
 
@@ -34,6 +37,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] float slideDuration = 0.6f;
     [Tooltip("Cuanto avanza el jugador DENTRO de la sala nueva, medido desde el centro de su puerta de llegada. Debe quedar fuera del trigger de esa puerta.")]
     [SerializeField] float walkInDistance = 1.6f;
+
+    [Header("Jefe")]
+    [Tooltip("Veces que se puede volver a la sala segura (checkpoint) si se acaba el tiempo con el jefe. Despues, a empezar de cero.")]
+    [SerializeField, Min(0)] int bossRetries = 2;
+    [Tooltip("Segundos entre avisos de 'te faltan objetos' al chocar con la puerta del jefe.")]
+    [SerializeField] float gateHintCooldown = 2f;
 
     [Header("Inicio de partida (iris)")]
     [SerializeField] float irisHoldTime = 0.15f;   // tiempo con la pantalla cerrada
@@ -47,6 +56,10 @@ public class GameManager : MonoBehaviour
     float timeLeft;
     float totalTime;
     float ignoreDoorsUntil;
+    Room lastSafeRoom;            // checkpoint para el jefe
+    int bossRetriesLeft;
+    bool mustRestartGame;         // sin reintentos: el boton de Game Over reinicia toda la partida
+    float nextGateHint;
 
     public GameState State { get; private set; } = GameState.Transition;
     public bool IsPlaying => State == GameState.Playing;
@@ -86,6 +99,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         health = player.GetComponent<PlayerHealth>();
+        bossRetriesLeft = bossRetries;
 
         if (mapLoader == null)
         {
@@ -148,6 +162,7 @@ public class GameManager : MonoBehaviour
     {
         currentRoom = room;
         entryPosition = entry;
+        if (room.Type == RoomType.Safe) lastSafeRoom = room;
 
         room.gameObject.SetActive(true);
         room.ResetRoom();
@@ -169,8 +184,16 @@ public class GameManager : MonoBehaviour
     }
 
     /// Lo que ya se logro en la partida se refleja en la sala al (re)entrar o reiniciarla.
-    void ApplyProgress(Room room)
+    void ApplyProgress(Room room, bool animateGates = false)
     {
+        // Puertas que llevan a una sala que pide todos los objetos (el jefe): cerradas hasta tenerlos
+        foreach (var d in room.Doors)
+        {
+            if (d == null || d.Role != DoorRole.Forward) continue;
+            Room other = room.GetNeighbor(d.Side);
+            d.SetGateLocked(other != null && other.RequiresAllItems && !AllItemsCollected, animateGates);
+        }
+
         // Objeto de esta sala ya guardado en una visita anterior: sus puertas quedan abiertas.
         if (room.CollectibleCount > 0 && room.AllCollected) room.UnlockDoors();
 
@@ -209,6 +232,7 @@ public class GameManager : MonoBehaviour
         if (AllItemsCollected)
         {
             foreach (var r in allRooms) r.UnlockFinalExit();
+            ApplyProgress(room, true);
             ui.ShowMessage("¡Tienes todos los objetos! Busca la salida", 3.5f);
         }
         else
@@ -216,6 +240,13 @@ public class GameManager : MonoBehaviour
             ui.ShowMessage("Objeto " + ItemsCollected + "/" + totalItems, 2f);
         }
         RefreshHud();
+    }
+
+    /// Lo llama Room cuando una sala queda COMPLETADA (oleadas y/o puzzle resueltos).
+    public void OnRoomCompleted(Room room)
+    {
+        if (room != currentRoom) return;
+        ui.ShowMessage("¡Sala completada!", 2f);
     }
 
     /// Lo llama Collectible al ser recogido: el objeto aparece en la UI.
@@ -318,10 +349,31 @@ public class GameManager : MonoBehaviour
         previous.gameObject.SetActive(false);
 
         currentRoom = next;
+        if (next.Type == RoomType.Safe) lastSafeRoom = next;
         entryPosition = playerEnd;      // aqui reapareces si mueres en esta sala
         timeLeft = next.TimeLimit;
         RefreshHud();
         BeginPlaying();
+    }
+
+    // ---------- Cinematicas cortas (sala completada) ----------
+    /// Congela el control del jugador sin pausar el juego. Devuelve false si no se estaba jugando.
+    public bool BeginCutscene()
+    {
+        if (State != GameState.Playing) return false;
+        State = GameState.Transition;
+        player.InputEnabled = false;
+        return true;
+    }
+
+    /// Devuelve el control al jugador tras la cinematica.
+    public void EndCutscene()
+    {
+        if (State != GameState.Transition) return;
+        State = GameState.Playing;
+        player.InputEnabled = true;
+        ignoreDoorsUntil = Time.time + doorCooldown;
+        RefreshHud();
     }
 
     // ---------- Muerte ----------
@@ -348,11 +400,26 @@ public class GameManager : MonoBehaviour
         if (gameFeel != null) gameFeel.Release();    // el tiempo vuelve cuando el jugador ya reaparecio
     }
 
+    float RespawnInvulnerabilityFor(Room room)
+    {
+        return room != null && room.RespawnInvulnerability > 0f ? room.RespawnInvulnerability : respawnInvulnerability;
+    }
+
     void ResetRoomAndRespawn(bool resetTimer, bool begin = true)
     {
+        // Sala del jefe (Keep State On Death): nada se reinicia y se reaparece en el punto mas lejano al jefe
+        if (currentRoom.KeepStateOnDeath && State == GameState.Dead)
+        {
+            Vector2 threat = BossController.Active != null ? (Vector2)BossController.Active.transform.position : (Vector2)entryPosition;
+            health.Revive(currentRoom.FarthestRespawnPoint(threat), RespawnInvulnerabilityFor(currentRoom));
+            if (begin) BeginPlaying();
+            RefreshHud();
+            return;
+        }
+
         currentRoom.ResetRoom();
         ApplyProgress(currentRoom);
-        health.Revive(entryPosition);
+        health.Revive(entryPosition, RespawnInvulnerabilityFor(currentRoom));
         if (resetTimer) timeLeft = currentRoom.TimeLimit;
         if (begin) BeginPlaying();
         RefreshHud();
@@ -362,6 +429,18 @@ public class GameManager : MonoBehaviour
     void OnTimeUp()
     {
         if (gameFeel != null) gameFeel.Release();
+
+        // Con el jefe: se vuelve a la sala segura mientras queden reintentos; sin reintentos, a empezar de cero
+        if (currentRoom != null && currentRoom.IsBossRoom)
+        {
+            if (bossRetriesLeft > 0 && lastSafeRoom != null)
+            {
+                BossCheckpoint();
+                return;
+            }
+            mustRestartGame = true;
+        }
+
         State = GameState.GameOver;
         Deaths++;
         player.InputEnabled = false;
@@ -373,6 +452,11 @@ public class GameManager : MonoBehaviour
     public void RetryRoom()
     {
         if (State != GameState.GameOver) return;
+        if (mustRestartGame)
+        {
+            RestartGame();
+            return;
+        }
 
         ScreenFader f = Fader;
         if (f == null)
@@ -393,6 +477,49 @@ public class GameManager : MonoBehaviour
             },
             fadeBackIn: true,
             onVisible: BeginPlaying);
+    }
+
+    // ---------- Jefe ----------
+    /// Se acabo el tiempo con el jefe y quedan reintentos: fundido y de vuelta a la sala segura (el jefe se reinicia).
+    void BossCheckpoint()
+    {
+        bossRetriesLeft--;
+        State = GameState.Transition;
+        player.InputEnabled = false;
+        Deaths++;
+        RefreshHud();
+        ui.ShowMessage(bossRetriesLeft > 0
+            ? "¡El Ropavejero te atrapo! Te quedan " + bossRetriesLeft + " intentos"
+            : "¡El Ropavejero te atrapo! Este es tu ultimo intento", 3f);
+
+        Room boss = currentRoom;
+        Room safe = lastSafeRoom;
+        System.Action go = () =>
+        {
+            boss.ResetRoom();                    // el jefe vuelve a empezar con toda su vida
+            boss.gameObject.SetActive(false);
+            EnterRoom(safe, safe.SpawnPosition, false);
+        };
+
+        ScreenFader f = Fader;
+        if (f == null)
+        {
+            go();
+            BeginPlaying();
+            return;
+        }
+        f.FadeOutThen(onBlack: go, fadeBackIn: true, onVisible: BeginPlaying);
+    }
+
+    /// Lo llama el jefe cuando lo derrotan: fin del juego.
+    public void OnBossDefeated() => WinGame();
+
+    /// Lo llama la puerta del jefe cuando el jugador choca con ella y aun faltan objetos.
+    public void OnGateBlocked()
+    {
+        if (Time.time < nextGateHint || State != GameState.Playing) return;
+        nextGateHint = Time.time + gateHintCooldown;
+        ui.ShowMessage("Te faltan recuerdos: " + ItemsCollected + "/" + totalItems, 2f);
     }
 
     void WinGame()

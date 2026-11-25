@@ -10,6 +10,16 @@ public class PlayerController : MonoBehaviour
     [Header("Movimiento")]
     [SerializeField] float moveSpeed = 5f;
 
+    [Header("Suavizado del movimiento (arranque y frenado)")]
+    [Tooltip("Segundos para llegar a la velocidad maxima desde quieto. 0 = instantaneo (como antes).")]
+    [SerializeField, Min(0f)] float accelerationTime = 0.08f;
+    [Tooltip("Segundos para frenar hasta quedar quieto al soltar las teclas (el 'deslice').")]
+    [SerializeField, Min(0f)] float decelerationTime = 0.14f;
+    [Tooltip("Al cambiar a la direccion contraria, frena este multiplo mas rapido (para que no se sienta resbaloso).")]
+    [SerializeField, Min(1f)] float turnBoost = 2f;
+    [Tooltip("Al terminar el dash conserva un poco de impulso y frena suave en vez de pararse en seco.")]
+    [SerializeField] bool dashKeepsMomentum = true;
+
     [Header("Dash (Espacio)")]
     [SerializeField] float dashSpeed = 16f;
     [SerializeField] float dashDuration = 0.14f;
@@ -18,6 +28,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool dashIsInvulnerable = false;
     [Tooltip("Opcional: TrailRenderer que solo emite durante el dash.")]
     [SerializeField] TrailRenderer dashTrail;
+    [Tooltip("Tamano de la nube de polvo al empezar el dash (0 = sin polvo).")]
+    [SerializeField] float dashDustScale = 1.1f;
+    [Tooltip("Donde salen las particulas de polvo respecto al pivote (normalmente los pies).")]
+    [SerializeField] Vector2 feetOffset = new Vector2(0f, -0.05f);
 
     [Header("Salto falso (C) (solo visual + inmune a trampas del suelo)")]
     [SerializeField] float jumpDuration = 0.45f;
@@ -48,6 +62,10 @@ public class PlayerController : MonoBehaviour
     PlayerAim aim;
     Vector2 moveInput;
     Vector2 knockVelocity;
+    Vector2 moveVelocity;        // velocidad de caminar suavizada
+    bool held;                   // atrapado (por ejemplo, en el saco del Ropavejero)
+    Vector2 heldPosition;
+    bool inputBeforeHold = true;
     Vector2 dashDir;
     float dashTimeLeft;
     float dashCooldownTimer;
@@ -60,6 +78,7 @@ public class PlayerController : MonoBehaviour
     public FacingDirection Facing { get; private set; } = FacingDirection.Down;
     public bool IsAirborne { get; private set; }
     public bool IsDashing { get; private set; }
+    public bool IsHeld => held;
     public bool IsInvulnerable => IsDashing && dashIsInvulnerable;
     public JuiceAnimator Juice => juice;
     public float SpeedMultiplier { get; set; } = 1f;
@@ -106,6 +125,7 @@ public class PlayerController : MonoBehaviour
             if (!value)
             {
                 moveInput = Vector2.zero;
+                moveVelocity = Vector2.zero;
                 EndDash();
                 if (rb != null) rb.linearVelocity = Vector2.zero;
             }
@@ -153,18 +173,44 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Atrapado: se queda clavado en el sitio, sin moverse ni ser empujado
+        if (held)
+        {
+            rb.position = heldPosition;
+            rb.linearVelocity = Vector2.zero;
+            knockVelocity = Vector2.zero;
+            moveVelocity = Vector2.zero;
+            return;
+        }
+
         Vector2 velocity;
 
         if (IsDashing)
         {
             velocity = dashDir * dashSpeed;
             dashTimeLeft -= Time.fixedDeltaTime;
-            if (dashTimeLeft <= 0f) EndDash();
+            if (dashTimeLeft <= 0f) EndDash(dashKeepsMomentum);
         }
         else
         {
             float speed = moveSpeed * SpeedMultiplier * (IsAirborne ? airSpeedMultiplier : 1f);
-            velocity = moveInput * speed;
+            Vector2 target = moveInput * speed;
+
+            // Acelera y frena con suavidad en vez de cambiar de velocidad de golpe
+            float rate;
+            if (target.sqrMagnitude > 0.0001f)
+            {
+                bool reversing = moveVelocity.sqrMagnitude > 0.01f && Vector2.Dot(moveVelocity.normalized, target.normalized) < 0f;
+                rate = accelerationTime <= 0f ? float.PositiveInfinity
+                     : Mathf.Max(speed, 0.01f) / accelerationTime * (reversing ? turnBoost : 1f);
+            }
+            else
+            {
+                rate = decelerationTime <= 0f ? float.PositiveInfinity
+                     : Mathf.Max(moveSpeed, moveVelocity.magnitude) / decelerationTime;
+            }
+            moveVelocity = float.IsPositiveInfinity(rate) ? target : Vector2.MoveTowards(moveVelocity, target, rate * Time.fixedDeltaTime);
+            velocity = moveVelocity;
         }
 
         knockVelocity = Vector2.MoveTowards(knockVelocity, Vector2.zero, knockbackDecay * Time.fixedDeltaTime);
@@ -182,11 +228,14 @@ public class PlayerController : MonoBehaviour
         dashCooldownTimer = dashCooldown;
         IsDashing = true;
         if (dashTrail != null) dashTrail.emitting = true;
+        if (dashDustScale > 0f) Vfx.Play(VfxKind.Dust, rb.position + feetOffset, -dashDir, dashDustScale);
         if (juice != null) juice.Play("Dash", dashDir);     // estiramiento pronunciado en la direccion del dash
     }
 
-    void EndDash()
+    void EndDash(bool keepMomentum = false)
     {
+        // Sale del dash a velocidad de caminar en la misma direccion, y desde ahi frena suave
+        if (keepMomentum && IsDashing) moveVelocity = dashDir * moveSpeed * SpeedMultiplier;
         IsDashing = false;
         if (dashTrail != null) dashTrail.emitting = false;
     }
@@ -262,14 +311,36 @@ public class PlayerController : MonoBehaviour
         if (shadow != null) shadow.localScale = shadowBaseScale;
     }
 
+    // ---------- Atrapado ----------
+    /// Deja al jugador quieto en 'position' sin control (true) o lo suelta y le devuelve el control (false).
+    public void Hold(bool value, Vector2 position = default)
+    {
+        if (value)
+        {
+            if (!held) inputBeforeHold = inputEnabled;
+            held = true;
+            heldPosition = position;
+            InputEnabled = false;
+            rb.position = position;
+            transform.position = position;
+        }
+        else if (held)
+        {
+            held = false;
+            InputEnabled = inputBeforeHold;
+        }
+    }
+
     // ---------- Reaparicion ----------
     public void TeleportTo(Vector2 position)
     {
+        held = false;
         if (jumpRoutine != null) StopCoroutine(jumpRoutine);
         jumpRoutine = null;
         IsAirborne = false;
         EndDash();
         knockVelocity = Vector2.zero;
+        moveVelocity = Vector2.zero;
         ResetVisualOffsets();
         if (juice != null) juice.StopAll();
 
