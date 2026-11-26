@@ -8,15 +8,35 @@ public class WeaponVisual : MonoBehaviour
     [SerializeField] SpriteRenderer weaponRenderer;
     [Tooltip("El SpriteRenderer del jugador, para ordenar el arma delante o detras de el.")]
     [SerializeField] SpriteRenderer playerRenderer;
-    [Tooltip("Cuanto se aleja el arma de la mano.")]
-    [SerializeField] float distance = 0.45f;
+    [Tooltip("Radio de la orbita: que tan lejos del centro del jugador gira el arma. Mayor = el baston rota a su alrededor.")]
+    [SerializeField] float distance = 0.8f;
     [Tooltip("Angulo total del arco al golpear.")]
-    [SerializeField] float swingArc = 110f;
-    [Tooltip("Progreso del golpe: tiempo (0 a 1) en el eje X, avance del arco en el eje Y (0 = inicio, 1 = final). " +
-             "Valores fuera de 0 a 1 dan anticipacion (menor que 0) o rebote (mayor que 1).")]
-    [SerializeField] AnimationCurve swingCurve = DefaultSwingCurve();
+    [SerializeField] float swingArc = 140f;
     [Tooltip("Voltea el sprite en vertical al apuntar a la izquierda para que no quede de cabeza.")]
     [SerializeField] bool flipWhenAimingLeft = true;
+
+    [Header("Orden de dibujo")]
+    [Tooltip("Marcado: el arma SIEMPRE se dibuja delante del jugador (tambien de espaldas).")]
+    [SerializeField] bool alwaysInFront = true;
+    [Tooltip("Cuantos ordenes por encima del jugador va el arma (la estela va uno por debajo del arma).")]
+    [SerializeField, Min(1)] int sortingOffset = 2;
+
+    [Header("Swing pesado (un baston mas grande que el nino)")]
+    [Tooltip("Cuanto se echa hacia atras ANTES del golpe, ademas de medio arco (fraccion del arco). Mas = mas esfuerzo.")]
+    [SerializeField, Range(0f, 0.5f)] float anticipation = 0.15f;
+    [Tooltip("Cuanto se pasa de largo al terminar el golpe (fraccion del arco): el peso lo arrastra.")]
+    [SerializeField, Range(0f, 0.5f)] float overshoot = 0.12f;
+    [Tooltip("Echarse atras (Wind Up del PlayerAttack): tiempo (0 a 1) en X, avance (0 a 1) en Y. Lento al principio = pesado.")]
+    [SerializeField] AnimationCurve windUpCurve = DefaultWindUpCurve();
+    [Tooltip("El golpe (Active Time del PlayerAttack): tiempo (0 a 1) en X, avance (0 a 1) en Y. Arranca lento y acelera.")]
+    [SerializeField] AnimationCurve strikeCurve = DefaultStrikeCurve();
+    [Tooltip("Segundos que tarda en asentarse despues de pasarse de largo (inercia del peso).")]
+    [SerializeField, Min(0f)] float settleTime = 0.18f;
+    [Tooltip("Segundos que tarda en volver a su posicion de reposo despues de asentarse.")]
+    [SerializeField, Min(0f)] float returnTime = 0.22f;
+
+    [Header("Estela del swing")]
+    [SerializeField] bool useTrail = true;
 
     [Header("Aparecer / desaparecer")]
     [Tooltip("Segundos que tarda el arma en aparecer o guardarse.")]
@@ -53,21 +73,22 @@ public class WeaponVisual : MonoBehaviour
     /// Muestra u oculta el arma (con un pequeno rebote al aparecer).
     public void SetVisible(bool visible, bool instant = false)
     {
+        if (visible && !shown && !instant) Sfx.Play(SfxId.WeaponAppear, transform.position);
         shown = visible;
         if (instant) showT = visible ? 1f : 0f;
         if (!visible) CancelSwing();
     }
 
-    static AnimationCurve DefaultSwingCurve()
+    // Se echa atras lento (le cuesta levantarlo) y se frena arriba
+    static AnimationCurve DefaultWindUpCurve()
     {
-        var curve = new AnimationCurve(
-            new Keyframe(0f, 0f),
-            new Keyframe(0.18f, -0.12f),    // anticipacion: echa el arma hacia atras
-            new Keyframe(0.5f, 1.08f),      // golpe rapido que se pasa un poco
-            new Keyframe(0.78f, 0.98f),
-            new Keyframe(1f, 1f));
-        for (int i = 0; i < curve.length; i++) curve.SmoothTangents(i, 0f);
-        return curve;
+        return new AnimationCurve(new Keyframe(0f, 0f, 0f, 0.6f), new Keyframe(0.7f, 0.9f, 1.2f, 1.2f), new Keyframe(1f, 1f, 0f, 0f));
+    }
+
+    // El golpe arranca lento (el peso) y acelera hasta el final
+    static AnimationCurve DefaultStrikeCurve()
+    {
+        return new AnimationCurve(new Keyframe(0f, 0f, 0f, 0.2f), new Keyframe(0.45f, 0.3f, 1.4f, 1.4f), new Keyframe(1f, 1f, 1.9f, 0f));
     }
 
     static AnimationCurve DefaultScaleCurve()
@@ -81,10 +102,13 @@ public class WeaponVisual : MonoBehaviour
         return curve;
     }
 
+    SwingTrail trail;
+
     void Awake()
     {
         if (aim == null) aim = GetComponentInParent<PlayerAim>();
         if (weaponRenderer != null) baseWeaponScale = weaponRenderer.transform.localScale;
+        if (useTrail && weaponRenderer != null) trail = SwingTrail.For(weaponRenderer);
     }
 
     void LateUpdate()
@@ -118,20 +142,25 @@ public class WeaponVisual : MonoBehaviour
         if (playerRenderer != null)
         {
             weaponRenderer.sortingLayerID = playerRenderer.sortingLayerID;
-            // De espaldas (apuntando arriba) el arma queda detras del jugador.
-            weaponRenderer.sortingOrder = playerRenderer.sortingOrder + (aim.Direction.y > 0.35f ? -1 : 1);
+            // Por defecto siempre delante; sin 'Always In Front', de espaldas (apuntando arriba) queda detras.
+            bool behind = !alwaysInFront && aim.Direction.y > 0.35f;
+            weaponRenderer.sortingOrder = playerRenderer.sortingOrder + (behind ? -sortingOffset : sortingOffset);
         }
     }
 
     /// Cuanto esta cargado el ataque (0 a 1): echa la espada hacia atras.
     public void SetCharge(float amount) => chargeAmount = Mathf.Clamp01(amount);
 
-    /// Arco del arma durante el golpe, siguiendo la curva. Alterna el sentido en cada golpe.
-    public void Swing(float duration)
+    /// Golpe pesado: se echa atras durante 'windUp', golpea durante 'activeTime' (con estela), se pasa de largo,
+    /// se asienta y vuelve. Usa los mismos tiempos que el hitbox del PlayerAttack. Alterna el sentido en cada golpe.
+    public void Swing(float windUp, float activeTime)
     {
         if (swing != null) StopCoroutine(swing);
-        swing = StartCoroutine(SwingRoutine(Mathf.Max(0.02f, duration)));
+        swing = StartCoroutine(SwingRoutine(Mathf.Max(0f, windUp), Mathf.Max(0.02f, activeTime)));
     }
+
+    /// Compatibilidad: reparte la duracion entre echarse atras (40%) y golpear (60%).
+    public void Swing(float duration) => Swing(duration * 0.4f, duration * 0.6f);
 
     /// Swing del ataque cargado: la espada crece 'scaleMultiplier' veces y hace un arco mayor.
     public void SwingCharged(float duration, float scaleMultiplier)
@@ -147,23 +176,52 @@ public class WeaponVisual : MonoBehaviour
         swingOffset = 0f;
         chargeAmount = 0f;
         scaleFactor = 1f;
+        if (trail != null) trail.Clear();
     }
 
-    IEnumerator SwingRoutine(float duration)
+    IEnumerator SwingRoutine(float windUp, float activeTime)
     {
-        float start = swingArc * 0.5f * swingSign;
-        float end = -start;
+        int sign = swingSign;
+        swingSign = -swingSign;                  // el siguiente golpe va al reves (aunque este se interrumpa)
+
+        float from = swingOffset;                // si venia de otro golpe, sigue desde donde estaba
+        float back = (swingArc * 0.5f + swingArc * anticipation) * sign;
+        float end = -swingArc * 0.5f * sign;
+        float past = end - swingArc * overshoot * sign;
+
+        // 1) Se echa hacia atras con esfuerzo
+        yield return Animate(windUp, k => swingOffset = Mathf.LerpUnclamped(from, back, windUpCurve.Evaluate(k)));
+
+        // 2) Golpe: arranca lento, acelera y se pasa de largo (con estela)
+        if (trail != null) trail.Begin();
+        yield return Animate(activeTime, k => swingOffset = Mathf.LerpUnclamped(back, past, strikeCurve.Evaluate(k)));
+        if (trail != null) trail.End();
+
+        // 3) La inercia lo deja un poco pasado y se asienta
+        yield return Animate(settleTime, k => swingOffset = Mathf.Lerp(past, end, Mathf.SmoothStep(0f, 1f, k)));
+
+        // 4) Vuelve a reposo
+        yield return Animate(returnTime, k => swingOffset = Mathf.Lerp(end, 0f, Mathf.SmoothStep(0f, 1f, k)));
+
+        swingOffset = 0f;
+        swing = null;
+    }
+
+    // Recorre 'duration' segundos (con escala de tiempo: se congela con el hitstop) llamando a step(0..1)
+    static IEnumerator Animate(float duration, System.Action<float> step)
+    {
+        if (duration <= 0f)
+        {
+            step(1f);
+            yield break;
+        }
         float t = 0f;
         while (t < duration)
         {
-            t += Time.deltaTime;                 // con escala de tiempo: se congela con el hitstop
-            float progress = swingCurve.Evaluate(Mathf.Clamp01(t / duration));
-            swingOffset = Mathf.LerpUnclamped(start, end, progress);
+            t += Time.deltaTime;
+            step(Mathf.Clamp01(t / duration));
             yield return null;
         }
-        swingOffset = 0f;
-        swingSign = -swingSign;
-        swing = null;
     }
 
     IEnumerator ChargedSwingRoutine(float duration, float targetScale)
@@ -173,15 +231,17 @@ public class WeaponVisual : MonoBehaviour
         float end = -start * chargedArcMultiplier;
         chargeAmount = 0f;                       // desde ahora el angulo lo lleva swingOffset
 
+        if (trail != null) trail.Begin();
         float t = 0f;
         while (t < duration)
         {
             t += Time.deltaTime;
             float k = Mathf.Clamp01(t / duration);
-            swingOffset = Mathf.LerpUnclamped(start, end, swingCurve.Evaluate(k));
+            swingOffset = Mathf.LerpUnclamped(start, end, strikeCurve.Evaluate(k));
             scaleFactor = Mathf.LerpUnclamped(1f, targetScale, chargedScaleCurve.Evaluate(k));
             yield return null;
         }
+        if (trail != null) trail.End();
 
         // Vuelve a su sitio y a su tamano
         float fromAngle = swingOffset;

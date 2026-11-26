@@ -78,9 +78,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -961945979
-  m_SortingLayer: 2
-  m_SortingOrder: 2
+  m_SortingLayerID: -595846255
+  m_SortingLayer: 3
+  m_SortingOrder: 1
   m_Sprite: {fileID: 1154277693706872300, guid: dd98c4db4274bfd44a1be07fa895d45b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -167,6 +167,7 @@ GameObject:
   - component: {fileID: 3782866071172891840}
   - component: {fileID: 8186101781397495002}
   - component: {fileID: 600807032781291102}
+  - component: {fileID: 2270728942594078073}
   m_Layer: 0
   m_Name: ROPAVEJERO
   m_TagString: Untagged
@@ -279,6 +280,7 @@ MonoBehaviour:
   hitFeelBoost: 1.3
   defeatHideDelay: 0.1
   hitVfxScale: 1
+  defeatPoofScale: 1.5
   hitFlashTime: 0.1
   obstacleMask:
     serializedVersion: 2
@@ -315,7 +317,7 @@ MonoBehaviour:
   summonWeights: {x: 0.5, y: 1.5, z: 1.5}
   repeatPenalty: 0.35
   meleeHits: {x: 1, y: 3}
-  meleeCharge: 0.7
+  meleeCharge: 0.5
   meleeComboCharge: 0.4
   meleeLength: 3
   meleeWidth: 1.6
@@ -326,13 +328,13 @@ MonoBehaviour:
   meleeShake: 0.4
   projectilePrefab: {fileID: 8315820204307181585, guid: 1c4b91cf6558ce64fb4b57fe9b4cd2c3, type: 3}
   muzzle: {fileID: 5076925791746668153}
-  rays: 8
+  rays: 10
   volleys: {x: 1, y: 3}
-  rangedCharge: 0.9
-  rangedBetween: 0.45
+  rangedCharge: 0.4
+  rangedBetween: 0.35
   rangedTelegraphLength: 9
   rangedTelegraphWidth: 0.6
-  projectileSpeed: 8
+  projectileSpeed: -9.5
   firstVolleyAimsAtPlayer: 1
   summonPool:
   - {fileID: 8236846055212234296, guid: 77bf924436ee6fe42b9d3fad2cc280c7, type: 3}
@@ -348,11 +350,11 @@ MonoBehaviour:
   sack: {fileID: 5108217196831475486, guid: fd4b63ebe0c711f448a0985569741313, type: 3}
   sackHand: {fileID: 8307425811069116460}
   sackRadius: 1.6
-  sackWindup: 0.9
+  sackWindup: 0.3
   sackFlightTime: 0.55
   sackReturnTime: 0.5
   sackLandShake: 0.45
-  stunTime: 2.5
+  stunTime: 1.5
   vulnerableDamageMultiplier: 1.5
   throwSprite: {fileID: 0}
   stunnedSprite: {fileID: 0}
@@ -361,6 +363,7 @@ MonoBehaviour:
   introRoarDelay: 0.6
   introHold: 1.1
   introRoarShake: 0.6
+  barFadeIn: 0.6
   defeatZoom: 0.55
   defeatHitShake: 0.7
   defeatHitStop: 0.15
@@ -372,6 +375,7 @@ MonoBehaviour:
   maxPulseStretch: 0.28
   blinkSpeed: {x: 3, y: 20}
   explosionScale: 2.6
+  bossPoofScale: 3.5
   explosionShake: 1
   afterExplosion: 0.9
 --- !u!114 &600807032781291102
@@ -387,9 +391,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DustTrail
   feetOffset: {x: 0, y: -0.05}
-  stepDistance: 0.6
+  stepDistance: 0.7
   minSpeed: 1
-  puffScale: 0.55
+  puffScale: 1
+--- !u!114 &2270728942594078073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8471906629416714463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6edae906b090e74dbc1192f82698d86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteStepAnimator
+  target: {fileID: 3030855217435421359}
+  juice: {fileID: 5466344715795022820}
+  front:
+    idle: {fileID: 1154277693706872300, guid: dd98c4db4274bfd44a1be07fa895d45b, type: 3}
+    step: {fileID: 1154277693706872300, guid: dd98c4db4274bfd44a1be07fa895d45b, type: 3}
+    dash: {fileID: 0}
+  back:
+    idle: {fileID: 0}
+    step: {fileID: 0}
+    dash: {fileID: 0}
+  side:
+    idle: {fileID: 0}
+    step: {fileID: 0}
+    dash: {fileID: 0}
+  stepDistance: 0.8
+  minSpeed: 0.3
+  hopOnStep: 1
+  hopIntensity: 0.5
+  hopDuration: 0
+  keepLoopSquash: 0
+  respectOtherSprites: 1
 --- !u!1 &8973241979480663198
 GameObject:
   m_ObjectHideFlags: 0

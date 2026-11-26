@@ -1,8 +1,13 @@
 using UnityEngine;
 
+/// Enemigo a distancia. Con los sprites del Coyongo:
+/// IDLE (coyongo con pajaro) -> CARGA (coyongo sin cabeza + el pajaro sale volando hacia arriba con alas abiertas y es
+/// EL PAJARO el que hace el squash & stretch) -> ATAQUE (el pajaro desaparece y sale el proyectil = pajaro furioso)
+/// -> RECARGA (coyongo vacio, saca la cabeza con S&S y vuelve a IDLE).
+/// Si no asignas sprites, funciona como antes (carga con el cuerpo).
 public class RangedEnemy : Enemy
 {
-    enum State { Moving, Aiming, Recovering }
+    enum State { Moving, Aiming, Headless, Recharging }
 
     [Header("Distancia")]
     [Tooltip("Mas cerca que esto: se aleja.")]
@@ -47,7 +52,45 @@ public class RangedEnemy : Enemy
     [SerializeField] bool blinkWhileAiming = false;
     [SerializeField] float blinkInterval = 0.07f;
 
+    [Header("Sprites del cuerpo (vacios = no cambia de sprite)")]
+    [Tooltip("Coyongo con pajaro (normal). Vacio = el sprite que ya tiene el SpriteRenderer.")]
+    [SerializeField] Sprite idleSprite;
+    [Tooltip("Coyongo SIN cabeza (base blanca): mientras el pajaro carga, dispara y hasta que empieza la recarga.")]
+    [SerializeField] Sprite headlessSprite;
+    [Tooltip("Recarga: sprites en orden entre 'sin cabeza' e IDLE (p. ej. el de la cabeza asomando). Cada uno con squash & stretch.")]
+    [SerializeField] Sprite[] rechargeFrames;
+    [Tooltip("Segundos que dura cada sprite de la recarga.")]
+    [SerializeField] float rechargeFrameTime = 0.22f;
+    [Tooltip("Disparo de JuiceAnimator del cuerpo en cada cambio de sprite de la recarga (y al volver a IDLE).")]
+    [SerializeField] string rechargeShot = "Pop";
+    [Tooltip("Fuerza del squash & stretch de la recarga.")]
+    [SerializeField] float rechargeIntensity = 1f;
+
+    [Header("Pajaro (hijo con SpriteRenderer, y JuiceAnimator opcional)")]
+    [Tooltip("Objeto hijo 'Bird' con el sprite del pajaro con alas abiertas. Empieza desactivado; el script lo muestra al cargar.")]
+    [SerializeField] SpriteRenderer bird;
+    [Tooltip("Marcalo si el dibujo del pajaro mira a la IZQUIERDA.")]
+    [SerializeField] bool birdArtFacesLeft = true;
+    [Tooltip("Donde aparece el pajaro respecto al pivote del enemigo (la cabeza). La X se refleja segun hacia donde mira.")]
+    [SerializeField] Vector2 birdStartOffset = new Vector2(0f, 0.9f);
+    [Tooltip("Cuanto sube el pajaro mientras carga.")]
+    [SerializeField] float birdRiseHeight = 0.7f;
+    [Tooltip("Parte del tiempo de carga que tarda en subir (el resto se queda arriba cargando). 0.35 = sube rapido al principio.")]
+    [SerializeField, Range(0.05f, 1f)] float birdRisePortion = 0.35f;
+    [Tooltip("Fuerza del squash & stretch de carga del PAJARO.")]
+    [SerializeField] float birdChargeIntensity = 1.2f;
+    [Tooltip("Squash & stretch de carga del CUERPO mientras el pajaro carga (0 = el cuerpo quieto).")]
+    [SerializeField] float bodyChargeIntensity = 0f;
+    [Tooltip("Distancia minima que el pajaro deja con las paredes de arriba (usa el Wall Mask). Si no cabe, sube menos.")]
+    [SerializeField] float birdWallMargin = 0.45f;
+    [Tooltip("Nubecita donde sale el pajaro de la cabeza (0 = nada).")]
+    [SerializeField] float birdPuffScale = 0.5f;
+
     State state = State.Moving;
+    JuiceAnimator birdJuice;
+    int rechargeIndex;
+    float birdStartY, birdRise;       // calculados en cada carga para no meterse en la pared
+    bool usesSprites;
     float stateTimer;
     float fireTimer;
     float flipTimer;
@@ -58,13 +101,32 @@ public class RangedEnemy : Enemy
     Vector2[] rayDirs;
     float[] free;
 
-    Vector2 Origin => muzzle != null ? (Vector2)muzzle.position : (Vector2)transform.position;
+    Vector2 Origin
+    {
+        get
+        {
+            // Desde el pajaro, salvo que haya quedado tocando una pared: entonces desde el cuerpo
+            if (bird != null && bird.gameObject.activeSelf &&
+                (wallMask.value == 0 || Physics2D.OverlapCircle(bird.transform.position, 0.3f, wallMask) == null))
+                return bird.transform.position;
+            return muzzle != null ? (Vector2)muzzle.position : (Vector2)transform.position;
+        }
+    }
+
+    bool FacingRight => PlayerPosition.x > rb.position.x;
 
     protected override void Awake()
     {
         base.Awake();
         if (body != null) radius = Mathf.Max(0.1f, body.bounds.extents.x * 0.9f);
         room = GetComponentInParent<Room>();
+        if (idleSprite == null && sr != null) idleSprite = sr.sprite;
+        usesSprites = headlessSprite != null || bird != null;
+        if (bird != null)
+        {
+            birdJuice = bird.GetComponent<JuiceAnimator>();
+            if (birdJuice == null) birdJuice = bird.gameObject.AddComponent<JuiceAnimator>();
+        }
         EnsureRays();
         OnReset();
     }
@@ -85,6 +147,8 @@ public class RangedEnemy : Enemy
     protected override void OnReset()
     {
         state = State.Moving;
+        HideBird();
+        SetBody(idleSprite);
         lastDir = Vector2.zero;
         strafeSign = Random.value < 0.5f ? 1f : -1f;
         flipTimer = Random.Range(strafeFlipTime.x, strafeFlipTime.y);
@@ -100,6 +164,15 @@ public class RangedEnemy : Enemy
             if (flasher != null) flasher.Cancel();
             if (juice != null) juice.Stop("Charge");
             if (bow != null) bow.Cancel();
+            if (usesSprites)
+            {
+                // El pajaro vuelve corriendo a la cabeza: salta directo a la recarga
+                if (bird != null && bird.gameObject.activeSelf && birdPuffScale > 0f)
+                    Vfx.Play(VfxKind.Dust, bird.transform.position, Vector2.up, birdPuffScale);
+                HideBird();
+                BeginRecharge();
+                return;
+            }
             state = State.Moving;
             ScheduleNextShot();
         }
@@ -123,16 +196,22 @@ public class RangedEnemy : Enemy
 
             case State.Aiming:
                 stateTimer -= dt;
+                UpdateBird();
                 if (stateTimer <= 0f) Shoot();
                 break;
 
-            case State.Recovering:
+            case State.Headless:
                 stateTimer -= dt;
                 if (stateTimer <= 0f)
                 {
-                    state = State.Moving;
-                    ScheduleNextShot();
+                    if (usesSprites) BeginRecharge();
+                    else FinishRecharge();
                 }
+                break;
+
+            case State.Recharging:
+                stateTimer -= dt;
+                if (stateTimer <= 0f) NextRechargeFrame();
                 break;
         }
     }
@@ -238,16 +317,27 @@ public class RangedEnemy : Enemy
         state = State.Aiming;
         stateTimer = aimTime;
 
-        // Aviso: el cuerpo carga (balanceo + squash & stretch) y el arco se tensa
-        if (juice != null) juice.Play("Charge", Vector2.zero, aimTime, chargeIntensity);
+        if (usesSprites)
+        {
+            // El coyongo se queda sin cabeza y el pajaro sale volando hacia arriba a cargar
+            SetBody(headlessSprite);
+            if (juice != null && bodyChargeIntensity > 0f) juice.Play("Charge", Vector2.zero, aimTime, bodyChargeIntensity);
+            ShowBird();
+        }
+        else if (juice != null)
+        {
+            // Sin sprites: el cuerpo carga (balanceo + squash & stretch) como antes
+            juice.Play("Charge", Vector2.zero, aimTime, chargeIntensity);
+        }
         if (bow != null) bow.Draw(aimTime);
         if (blinkWhileAiming && flasher != null) flasher.Blink(aimTime, blinkInterval);
     }
 
     void Shoot()
     {
+        Sfx.Play(SfxId.BirdShoot, transform.position);
         if (flasher != null) flasher.Cancel();
-        if (juice != null) juice.Play("Release");
+        if (juice != null && !usesSprites) juice.Play("Release");
         if (bow != null) bow.Release();
 
         if (projectilePrefab != null && PlayerAlive)
@@ -263,8 +353,123 @@ public class RangedEnemy : Enemy
             Track(projectile.gameObject);
         }
 
-        state = State.Recovering;
+        // El pajaro ahora ES el proyectil
+        if (bird != null && bird.gameObject.activeSelf && birdPuffScale > 0f)
+            Vfx.Play(VfxKind.Dust, bird.transform.position, Vector2.up, birdPuffScale);
+        HideBird();
+
+        state = State.Headless;           // se queda vacio un momento: la oportunidad del jugador
         stateTimer = recoverTime;
+    }
+
+    // ---------- Recarga: saca la cabeza con squash & stretch y vuelve a IDLE ----------
+    void BeginRecharge()
+    {
+        state = State.Recharging;
+        rechargeIndex = -1;
+        NextRechargeFrame();
+    }
+
+    void NextRechargeFrame()
+    {
+        rechargeIndex++;
+        int count = rechargeFrames != null ? rechargeFrames.Length : 0;
+        while (rechargeIndex < count && rechargeFrames[rechargeIndex] == null) rechargeIndex++;
+
+        if (rechargeIndex < count)
+        {
+            SetBody(rechargeFrames[rechargeIndex]);
+            PlayRechargeShot();
+            stateTimer = rechargeFrameTime;
+            return;
+        }
+        FinishRecharge();
+    }
+
+    void FinishRecharge()
+    {
+        if (usesSprites)
+        {
+            SetBody(idleSprite);
+            PlayRechargeShot();
+        }
+        state = State.Moving;
+        ScheduleNextShot();
+    }
+
+    void PlayRechargeShot()
+    {
+        if (juice != null && !string.IsNullOrEmpty(rechargeShot)) juice.Play(rechargeShot, Vector2.zero, 0f, rechargeIntensity);
+    }
+
+    void SetBody(Sprite sprite)
+    {
+        if (sr != null && sprite != null) sr.sprite = sprite;
+    }
+
+    // ---------- Pajaro ----------
+    void ShowBird()
+    {
+        Sfx.Play(SfxId.BirdCharge, transform.position);
+        if (bird == null) return;
+        FitBirdUnderCeiling();
+        bird.gameObject.SetActive(true);
+        UpdateBird();
+        if (birdPuffScale > 0f) Vfx.Play(VfxKind.Dust, bird.transform.position, Vector2.up, birdPuffScale);
+        if (birdJuice != null)
+        {
+            birdJuice.StopAll();
+            birdJuice.Play("Charge", Vector2.zero, aimTime, birdChargeIntensity);
+        }
+    }
+
+    void UpdateBird()
+    {
+        if (bird == null || !bird.gameObject.activeSelf) return;
+        bool right = FacingRight;
+
+        // Sube rapido al principio (ease out) y se queda arriba cargando
+        float progress = aimTime > 0f ? 1f - Mathf.Clamp01(stateTimer / aimTime) : 1f;
+        float k = Mathf.Clamp01(progress / Mathf.Max(0.01f, birdRisePortion));
+        k = 1f - (1f - k) * (1f - k);
+
+        // Bird Start Offset es para cuando mira hacia donde mira el dibujo; al voltearse se refleja la X
+        bool lookingLikeArt = artFacesLeft ? !right : right;
+        Vector2 offset = birdStartOffset;
+        if (!lookingLikeArt) offset.x = -offset.x;
+        offset.y = birdStartY + birdRise * k;
+
+        bird.transform.position = (Vector2)transform.position + offset;
+        bird.flipX = birdArtFacesLeft ? right : !right;
+    }
+
+    // Si hay una pared arriba, el pajaro sube solo hasta donde cabe (asi el proyectil no nace dentro del muro)
+    void FitBirdUnderCeiling()
+    {
+        birdStartY = birdStartOffset.y;
+        birdRise = birdRiseHeight;
+        if (wallMask.value == 0) return;
+
+        float wanted = birdStartOffset.y + birdRiseHeight;
+        RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, Vector2.up, wanted + birdWallMargin, wallMask);
+        if (hit.collider == null) return;
+
+        float room = Mathf.Max(0f, hit.distance - birdWallMargin);
+        birdStartY = Mathf.Min(birdStartOffset.y, room);
+        birdRise = Mathf.Clamp(room - birdStartY, 0f, birdRiseHeight);
+    }
+
+    void HideBird()
+    {
+        if (bird == null) return;
+        if (birdJuice != null) birdJuice.StopAll();
+        bird.gameObject.SetActive(false);
+    }
+
+    protected override void Defeat(Vector2 direction)
+    {
+        HideBird();
+        base.Defeat(direction);
     }
 
     void OnDrawGizmosSelected()

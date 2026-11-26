@@ -79,10 +79,10 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -595846255
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 4121652239262568311, guid: 80611a371198fe04a86c96d1b1d4a8ce, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 1
+  m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 2.56, y: 2.56}
@@ -300,6 +300,7 @@ GameObject:
   - component: {fileID: 8236846055212234296}
   - component: {fileID: 7372673401672454983}
   - component: {fileID: 4749596505333459112}
+  - component: {fileID: 4221636698198690601}
   m_Layer: 0
   m_Name: MeleeEnemy
   m_TagString: Untagged
@@ -408,9 +409,9 @@ MonoBehaviour:
   knockbackDecay: 32
   hitStun: 0.18
   hitFeelBoost: 1.3
-  defeatHideDelay: 0.1
+  defeatHideDelay: 0
   hitVfxScale: 1
-  defeatPoofScale: 1.5
+  defeatPoofScale: 1
   hitFlashTime: 0.1
   obstacleMask:
     serializedVersion: 2
@@ -428,6 +429,7 @@ MonoBehaviour:
   flasher: {fileID: 7372673401672454983}
   juice: {fileID: 4370173956178595001}
   faceMoveDirection: 1
+  artFacesLeft: 0
   defeatEffect: {fileID: 0}
   attackDistance: 1.3
   chargeTime: 0.5
@@ -472,3 +474,36 @@ MonoBehaviour:
   stepDistance: 0.6
   minSpeed: 1
   puffScale: 0.45
+--- !u!114 &4221636698198690601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908056504623939726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6edae906b090e74dbc1192f82698d86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteStepAnimator
+  target: {fileID: 1634238918533332171}
+  juice: {fileID: 4370173956178595001}
+  front:
+    idle: {fileID: 4121652239262568311, guid: 80611a371198fe04a86c96d1b1d4a8ce, type: 3}
+    step: {fileID: -286356239095697229, guid: f5733042bed0bf7468a851f5938a4766, type: 3}
+    dash: {fileID: 0}
+  back:
+    idle: {fileID: 0}
+    step: {fileID: 0}
+    dash: {fileID: 0}
+  side:
+    idle: {fileID: 0}
+    step: {fileID: 0}
+    dash: {fileID: 0}
+  stepDistance: 0.45
+  minSpeed: 0.3
+  hopOnStep: 1
+  hopIntensity: 1
+  hopDuration: 0
+  keepLoopSquash: 0
+  respectOtherSprites: 1

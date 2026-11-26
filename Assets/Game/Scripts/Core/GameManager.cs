@@ -16,7 +16,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] PlayerController player;
     [SerializeField] Camera mainCamera;
     [SerializeField] UIManager ui;
-    [SerializeField] IrisTransition iris;
+
+    [Header("Audio y fin de partida")]
+    [Tooltip("Opcional: secuencia del saco cuando se acaba el tiempo (TimeUpSequence). Vacio = fundido a negro y Game Over.")]
+    [SerializeField] TimeUpSequence timeUpSequence;
+    [Tooltip("Fundido entre la musica de las salas y la del jefe.")]
+    [SerializeField] float roomMusicFade = 1.5f;
+    [Tooltip("Al acabarse el tiempo: segundos que tarda en apagarse la musica (junto con el fundido a negro).")]
+    [SerializeField] float timeUpMusicFade = 0.8f;
+    [SerializeField] IrisTransition iris;          // opcional: solo se usa al empezar la partida
     [Tooltip("Opcional: dirige la camara (shake, zoom), el hitstop, la camara lenta y el congelado al morir. Sin el, el juego funciona sin esos efectos.")]
     [SerializeField] GameFeel gameFeel;
     [Tooltip("Opcional: fundido a negro lento al reiniciar. Si esta vacio se usa el ScreenFader de la escena (si hay).")]
@@ -43,6 +51,19 @@ public class GameManager : MonoBehaviour
     [SerializeField, Min(0)] int bossRetries = 2;
     [Tooltip("Segundos entre avisos de 'te faltan objetos' al chocar con la puerta del jefe.")]
     [SerializeField] float gateHintCooldown = 2f;
+
+    public enum DebugStart { Off, Boss, Safe, Item, Puzzle, Trap, Enemy, Shop, ByName }
+
+    [Header("DEBUG: empezar en otra sala (solo pruebas)")]
+    [Tooltip("Off = partida normal desde el Spawn. Otro valor = empiezas en la primera sala de ese tipo del mapa. " +
+             "ByName = la sala cuyo GameObject se llama como 'Debug Room Name'.")]
+    [SerializeField] DebugStart debugStartRoom = DebugStart.Off;
+    [Tooltip("Para ByName: nombre exacto del GameObject de la sala en el mapa (p. ej. 'ROOM 12').")]
+    [SerializeField] string debugRoomName = "";
+    [Tooltip("Da todos los recuerdos al empezar (para que la puerta del jefe este abierta).")]
+    [SerializeField] bool debugGiveAllItems = false;
+    [Tooltip("Marcado: el debug solo funciona en el Editor; en el juego exportado (build) siempre se empieza normal.")]
+    [SerializeField] bool debugOnlyInEditor = true;
 
     [Header("Inicio de partida (iris)")]
     [SerializeField] float irisHoldTime = 0.15f;   // tiempo con la pantalla cerrada
@@ -123,8 +144,86 @@ public class GameManager : MonoBehaviour
         }
 
         ui.HidePanels();
-        EnterRoom(first, first.SpawnPosition, false);
+
+        Vector3 firstEntry = first.SpawnPosition;
+        if (DebugEnabled)
+        {
+            if (debugGiveAllItems) DebugGiveAllItems();
+            Room debugRoom = FindDebugRoom();
+            if (debugRoom != null)
+            {
+                first = debugRoom;
+                firstEntry = DebugEntryPosition(debugRoom);
+                // Checkpoint del jefe: la primera sala segura del mapa
+                if (lastSafeRoom == null) lastSafeRoom = allRooms.Find(r => r != null && r.Type == RoomType.Safe);
+                Debug.Log("GameManager DEBUG: empezando en '" + debugRoom.name + "' (" + debugRoom.Type + ").", debugRoom);
+            }
+            else if (debugStartRoom != DebugStart.Off)
+            {
+                Debug.LogWarning("GameManager DEBUG: no encontre la sala pedida (" + debugStartRoom +
+                                 (debugStartRoom == DebugStart.ByName ? " '" + debugRoomName + "'" : "") + "). Empiezo en el Spawn.", this);
+            }
+        }
+
+        EnterRoom(first, firstEntry, false);
         StartCoroutine(IntroRoutine());
+    }
+
+    // ---------- Debug ----------
+    bool DebugEnabled => !debugOnlyInEditor || Application.isEditor;
+
+    Room FindDebugRoom()
+    {
+        if (debugStartRoom == DebugStart.Off) return null;
+        foreach (var r in allRooms)
+        {
+            if (r == null) continue;
+            switch (debugStartRoom)
+            {
+                case DebugStart.ByName:
+                    if (!string.IsNullOrEmpty(debugRoomName) && r.name.Trim() == debugRoomName.Trim()) return r;
+                    break;
+                case DebugStart.Boss: if (r.IsBossRoom || r.GetComponentInChildren<BossController>(true) != null) return r; break;
+                case DebugStart.Safe: if (r.Type == RoomType.Safe) return r; break;
+                case DebugStart.Item: if (r.Type == RoomType.Item) return r; break;
+                case DebugStart.Puzzle: if (r.Type == RoomType.Puzzle) return r; break;
+                case DebugStart.Trap: if (r.Type == RoomType.Trap) return r; break;
+                case DebugStart.Enemy: if (r.Type == RoomType.Enemy) return r; break;
+                case DebugStart.Shop: if (r.Type == RoomType.Shop) return r; break;
+            }
+        }
+        return null;
+    }
+
+    // Aparece como si hubiera entrado por una puerta (preferiblemente la que viene de la sala segura)
+    Vector3 DebugEntryPosition(Room room)
+    {
+        if (room.Type == RoomType.Spawn) return room.SpawnPosition;
+        RoomDoor best = null;
+        foreach (var d in room.Doors)
+        {
+            if (d == null) continue;
+            Room other = room.GetNeighbor(d.Side);
+            if (other == null) continue;
+            if (best == null || other.Type == RoomType.Safe) best = d;
+            if (other.Type == RoomType.Safe) break;
+        }
+        if (best == null) return room.SpawnPosition;
+
+        Vector2 inward = -best.Side.ToWorldDirection();
+        Vector3 p = best.transform.position + (Vector3)(inward * walkInDistance);
+        p.z = player.transform.position.z;
+        return p;
+    }
+
+    void DebugGiveAllItems()
+    {
+        foreach (var r in allRooms)
+        {
+            if (r == null) continue;
+            foreach (var c in r.GetComponentsInChildren<Collectible>(true)) c.DebugCollect();
+        }
+        Debug.Log("GameManager DEBUG: recuerdos " + ItemsCollected + "/" + totalItems + ".", this);
     }
 
     void Update()
@@ -161,6 +260,7 @@ public class GameManager : MonoBehaviour
     void EnterRoom(Room room, Vector3 entry, bool startPlaying = true)
     {
         currentRoom = room;
+        UpdateRoomMusic(room);
         entryPosition = entry;
         if (room.Type == RoomType.Safe) lastSafeRoom = room;
 
@@ -349,6 +449,7 @@ public class GameManager : MonoBehaviour
         previous.gameObject.SetActive(false);
 
         currentRoom = next;
+        UpdateRoomMusic(next);
         if (next.Type == RoomType.Safe) lastSafeRoom = next;
         entryPosition = playerEnd;      // aqui reapareces si mueres en esta sala
         timeLeft = next.TimeLimit;
@@ -425,22 +526,92 @@ public class GameManager : MonoBehaviour
         RefreshHud();
     }
 
+    // ---------- Musica segun la sala ----------
+    void UpdateRoomMusicForce() => UpdateRoomMusic(currentRoom, true);
+
+    void UpdateRoomMusic(Room room, bool force = false)
+    {
+        var am = AudioManager.Instance;
+        if (am == null || room == null) return;
+        if (!force && (State == GameState.GameOver || State == GameState.Win)) return;
+
+        bool boss = room.IsBossRoom && am.HasMusic(MusicId.Boss);
+        am.PlayMusic(boss ? MusicId.Boss : MusicId.Gameplay, roomMusicFade);
+
+        bool bossAmb = room.IsBossRoom && am.HasAmbience(AmbienceId.BossRoom);
+        am.PlayAmbience(bossAmb ? AmbienceId.BossRoom : AmbienceId.Dungeon, 2f);
+    }
+
     // ---------- Tiempo / Game Over / Victoria ----------
     void OnTimeUp()
     {
         if (gameFeel != null) gameFeel.Release();
 
+        bool toCheckpoint = false;
         // Con el jefe: se vuelve a la sala segura mientras queden reintentos; sin reintentos, a empezar de cero
         if (currentRoom != null && currentRoom.IsBossRoom)
         {
-            if (bossRetriesLeft > 0 && lastSafeRoom != null)
-            {
-                BossCheckpoint();
-                return;
-            }
-            mustRestartGame = true;
+            if (bossRetriesLeft > 0 && lastSafeRoom != null) toCheckpoint = true;
+            else mustRestartGame = true;
         }
 
+        // Secuencia del saco (zoom al jugador + el saco le cae encima) y despues checkpoint o Game Over
+        if (timeUpSequence != null)
+        {
+            player.InputEnabled = false;
+            timeUpSequence.Play(health, () =>
+            {
+                if (toCheckpoint) BossCheckpoint();
+                else GameOverWithFade();
+            });
+            if (State == GameState.Playing) State = GameState.Transition;     // por si no hubo zoom
+            return;
+        }
+
+        if (toCheckpoint)
+        {
+            BossCheckpoint();
+            return;
+        }
+
+        // Sin saco: la musica se apaga, fundido a negro y aparece el Game Over (que pone su propia musica)
+        player.InputEnabled = false;
+        State = GameState.Transition;
+        Sfx.Play(SfxId.TimeUp);
+        Sfx.StopMusic(timeUpMusicFade);
+        Sfx.Ambience(AmbienceId.None, timeUpMusicFade);
+        GameOverWithFade();
+    }
+
+    // Con el Game Over / la Victoria en pantalla la sala se apaga: trampas, flechas y enemigos dejan de funcionar
+    // y de sonar. Al reintentar se vuelve a encender (y se reinicia).
+    void PauseWorld(bool paused)
+    {
+        if (currentRoom != null && currentRoom.gameObject.activeSelf == paused)
+            currentRoom.gameObject.SetActive(!paused);
+        if (paused && AudioManager.Instance != null) AudioManager.Instance.StopAllSfx();
+    }
+
+    void GameOverWithFade()
+    {
+        ScreenFader f = Fader;
+        if (f == null)
+        {
+            if (timeUpSequence != null) timeUpSequence.Cleanup();
+            ShowGameOverNow();
+            return;
+        }
+        // El saco ya hizo su efecto: sin la espera previa del boton
+        f.FadeOutThen(onBlack: () =>
+        {
+            if (timeUpSequence != null) timeUpSequence.Cleanup();
+            ShowGameOverNow();
+        }, fadeBackIn: true);
+    }
+
+    void ShowGameOverNow()
+    {
+        PauseWorld(true);
         State = GameState.GameOver;
         Deaths++;
         player.InputEnabled = false;
@@ -462,6 +633,7 @@ public class GameManager : MonoBehaviour
         if (f == null)
         {
             ui.HidePanels();
+            PauseWorld(false);
             ResetRoomAndRespawn(true);
             return;
         }
@@ -471,6 +643,8 @@ public class GameManager : MonoBehaviour
             onBlack: () =>
             {
                 ui.HidePanels();
+                PauseWorld(false);
+                UpdateRoomMusicForce();
                 ResetRoomAndRespawn(true, false);
                 State = GameState.Transition;          // sin control hasta que la pantalla se vea
                 player.InputEnabled = false;
@@ -496,6 +670,7 @@ public class GameManager : MonoBehaviour
         Room safe = lastSafeRoom;
         System.Action go = () =>
         {
+            if (timeUpSequence != null) timeUpSequence.Cleanup();
             boss.ResetRoom();                    // el jefe vuelve a empezar con toda su vida
             boss.gameObject.SetActive(false);
             EnterRoom(safe, safe.SpawnPosition, false);
@@ -519,6 +694,7 @@ public class GameManager : MonoBehaviour
     {
         if (Time.time < nextGateHint || State != GameState.Playing) return;
         nextGateHint = Time.time + gateHintCooldown;
+        Sfx.Play(SfxId.GateBlocked, player.transform.position);
         ui.ShowMessage("Te faltan recuerdos: " + ItemsCollected + "/" + totalItems, 2f);
     }
 
@@ -527,6 +703,8 @@ public class GameManager : MonoBehaviour
         if (gameFeel != null) gameFeel.Release();
         State = GameState.Win;
         player.InputEnabled = false;
+        Sfx.Ambience(AmbienceId.None, 1.5f);
+        PauseWorld(true);
         RefreshHud();
         ui.ShowWin(Deaths, totalTime, ItemsCollected, totalItems);
     }

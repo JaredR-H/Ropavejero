@@ -99,6 +99,7 @@ public class RoomGate : MonoBehaviour, IResettable
         {
             if (juice != null) juice.Play(open ? openShot : closeShot);
             if (dustScale > 0f) Vfx.Play(VfxKind.Dust, transform.position, Vector2.up, dustScale);
+            Sfx.Play(open ? SfxId.GateOpen : SfxId.GateClose, transform.position);
         }
     }
 }

@@ -28,6 +28,10 @@ public abstract class Enemy : MonoBehaviour, IHittable, IResettable
     [SerializeField, Min(0f)] protected float defeatHideDelay = 0.1f;
     [Tooltip("Tamano de las particulas al ser golpeado.")]
     [SerializeField] protected float hitVfxScale = 1f;
+    [Tooltip("Sonido al recibir un golpe.")]
+    [SerializeField] protected SfxId hitSound = SfxId.EnemyHit;
+    [Tooltip("Sonido al ser derrotado.")]
+    [SerializeField] protected SfxId defeatSound = SfxId.EnemyDeath;
     [Tooltip("Tamano de la nube grande al ser derrotado (1 = un poco mas grande que un personaje normal, 0 = sin nube).")]
     [SerializeField] protected float defeatPoofScale = 1.5f;
     [Tooltip("Duracion del destello blanco al ser golpeado.")]
@@ -65,6 +69,8 @@ public abstract class Enemy : MonoBehaviour, IHittable, IResettable
     [SerializeField] protected JuiceAnimator juice;
     [Tooltip("Voltea el sprite segun hacia donde mira. Dibuja el sprite mirando a la DERECHA.")]
     [SerializeField] protected bool faceMoveDirection = true;
+    [Tooltip("Marcalo si el dibujo del enemigo mira a la IZQUIERDA (como el Coyongo). Asi se voltea al reves.")]
+    [SerializeField] protected bool artFacesLeft = false;
     [Tooltip("Prefab opcional que aparece al ser derrotado (debe destruirse solo).")]
     [SerializeField] protected GameObject defeatEffect;
 
@@ -297,7 +303,7 @@ public abstract class Enemy : MonoBehaviour, IHittable, IResettable
     protected void FaceDirection(Vector2 dir)
     {
         if (!faceMoveDirection || sr == null) return;
-        if (Mathf.Abs(dir.x) > 0.05f) sr.flipX = dir.x < 0f;
+        if (Mathf.Abs(dir.x) > 0.05f) sr.flipX = artFacesLeft ? dir.x > 0f : dir.x < 0f;
     }
 
     // ---------- Recibir golpes ----------
@@ -327,6 +333,7 @@ public abstract class Enemy : MonoBehaviour, IHittable, IResettable
         if (GameFeel.Instance != null) GameFeel.Instance.EnemyHit(direction, feelMultiplier * hitFeelBoost);
         Vfx.Play(VfxKind.HitEnemy, body != null ? (Vector2)body.bounds.center : rb.position, direction,
                  hitVfxScale * (feelMultiplier > 1f ? 1.4f : 1f));
+        if (health > 0) Sfx.Play(hitSound, rb.position, 1f, feelMultiplier > 1f ? 0.9f : 1f);
 
         OnDamaged();
         if (health <= 0) Defeat(direction);
@@ -343,6 +350,8 @@ public abstract class Enemy : MonoBehaviour, IHittable, IResettable
         if (defeatEffect != null) Destroy(Instantiate(defeatEffect, transform.position, Quaternion.identity), 2f);
         if (defeatPoofScale > 0f)
             Vfx.Play(VfxKind.Poof, body != null ? (Vector2)body.bounds.center : rb.position, Vector2.up, defeatPoofScale);
+        Sfx.Play(hitSound, rb.position);
+        Sfx.Play(defeatSound, rb.position);
 
         // Se queda un instante (con el destello blanco) antes de desaparecer
         if (body != null) body.enabled = false;

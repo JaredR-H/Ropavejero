@@ -52,6 +52,11 @@ public class SpriteStepAnimator : MonoBehaviour
              "0 = solo el de cada paso. El balanceo (rotacion) se mantiene.")]
     [SerializeField, Range(0f, 1f)] float keepLoopSquash = 0f;
 
+    [Header("Sonido de pasos")]
+    [Tooltip("Sonido en cada paso (Footstep para el jugador, EnemyFootstep para enemigos, BossStep para el jefe, None = mudo).")]
+    [SerializeField] SfxId stepSound = SfxId.Footstep;
+    [SerializeField, Range(0f, 1f)] float stepVolume = 0.6f;
+
     [Header("Respetar otros scripts")]
     [Tooltip("Si otro script pone un sprite que no es de esta lista (sprite de ataque, aturdido...), no se le pisa hasta que lo devuelva.")]
     [SerializeField] bool respectOtherSprites = true;
@@ -72,6 +77,9 @@ public class SpriteStepAnimator : MonoBehaviour
         if (target == null && juice != null) target = juice.GetComponent<SpriteRenderer>();
         if (target == null) target = GetComponentInChildren<SpriteRenderer>(true);
         if (target == null) Debug.LogWarning("SpriteStepAnimator: no encontre el SpriteRenderer del personaje.", this);
+        // Si nadie cambio el sonido, los enemigos y el jefe usan el suyo
+        if (stepSound == SfxId.Footstep && player == null)
+            stepSound = GetComponent<BossController>() != null ? SfxId.BossStep : SfxId.EnemyFootstep;
     }
 
     void OnEnable()
@@ -123,6 +131,7 @@ public class SpriteStepAnimator : MonoBehaviour
             traveled = 0f;
             onStep = !onStep;
             if (onStep && hopOnStep && juice != null) juice.Play("Step", rb.linearVelocity, hopDuration, hopIntensity);
+            if (onStep) Sfx.Play(stepSound, rb.position, stepVolume);
         }
 
         Sprite wanted = onStep && set.step != null ? set.step : (set.idle != null ? set.idle : set.step);

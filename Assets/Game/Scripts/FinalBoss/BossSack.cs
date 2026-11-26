@@ -83,6 +83,7 @@ public class BossSack : MonoBehaviour
     /// Vuela en arco de 'from' a 'to' en 'duration' segundos (se pausa si el juego no esta en marcha).
     public IEnumerator Fly(Vector2 from, Vector2 to, float duration)
     {
+        Sfx.Play(SfxId.SackThrow, from);
         IsOut = true;
         gameObject.SetActive(true);
         if (sackRenderer != null) sackRenderer.enabled = true;
@@ -105,6 +106,7 @@ public class BossSack : MonoBehaviour
     {
         if (sackJuice != null) sackJuice.Play("Release");
         Vfx.Play(VfxKind.Dust, transform.position, Vector2.up, 1.6f);
+        Sfx.Play(SfxId.SackLand, transform.position);
         if (GameFeel.Instance != null && shake > 0f) GameFeel.Instance.AddShake(shake);
     }
 
@@ -135,6 +137,7 @@ public class BossSack : MonoBehaviour
 
         Vector2 holdPos = (Vector2)transform.position + holdOffset;
         player.Hold(true, holdPos);
+        Sfx.Play(SfxId.SackCapture, transform.position);
         if (heldHealth != null) heldHealth.SetCaptured(true);
         if (heldAttack != null)
         {
@@ -169,6 +172,7 @@ public class BossSack : MonoBehaviour
                 if (MashPressedThisFrame())
                 {
                     presses++;
+                    Sfx.Play(SfxId.SackMash, transform.position, 1f, 1f + 0.03f * presses);   // sube de tono al forcejear
                     if (sackJuice != null) sackJuice.Play("SackStruggle", Vector2.zero, 0f, 1f + 0.06f * presses);
                     if (GameFeel.Instance != null) GameFeel.Instance.AddShake(mashShake, UnityEngine.Random.insideUnitCircle);
                     if (presses % 3 == 0) Vfx.Play(VfxKind.Dust, transform.position, Vector2.up, 0.6f);
@@ -192,6 +196,7 @@ public class BossSack : MonoBehaviour
             player.ApplyKnockback(away.normalized, ejectForce);
             if (heldHealth != null) heldHealth.GrantInvulnerability(escapeInvulnerability);
             Vfx.Play(VfxKind.Dust, transform.position, Vector2.up, 1.4f);
+            Sfx.Play(SfxId.SackEscape, transform.position);
             if (sackJuice != null) sackJuice.Play("Release");
             if (GameFeel.Instance != null) GameFeel.Instance.AddShake(0.45f);
         }

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 06272b47d307232499626dd749872e92
+guid: a2ae4c3852ff3c84a8b6160b754498ec
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7651465676553821779
-    second: Characterr_0
+      213: -6679703446980117828
+    second: Ropavejero_ARTWORK_v1-DUST_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -139,23 +139,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Characterr_0
+      name: Ropavejero_ARTWORK_v1-DUST_0
       rect:
         serializedVersion: 2
-        x: 22
-        y: 25
-        width: 508
-        height: 713
-      alignment: 9
-      pivot: {x: 0.485, y: 0}
+        x: 0
+        y: 0
+        width: 1920
+        height: 599
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: da16ae1a18880d590800000000000000
-      internalID: -7651465676553821779
+      spriteID: cba3cc50b1dec43a0800000000000000
+      internalID: -6679703446980117828
       vertices: []
       indices: 
       edges: []
@@ -164,7 +164,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 3cdf6311afd9b334bafd93144835cfd2
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Characterr_0: -7651465676553821779
+      Ropavejero_ARTWORK_v1-DUST_0: -6679703446980117828
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

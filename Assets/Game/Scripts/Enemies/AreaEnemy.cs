@@ -28,12 +28,28 @@ public class AreaEnemy : Enemy
     [Tooltip("Que tan marcada es la animacion de carga (balanceo y squash & stretch) mientras se enciende la bomba.")]
     [SerializeField] float chargeIntensity = 1.5f;
 
+    [Header("Sprites")]
+    [Tooltip("Sprite mientras carga la explosion (mecha encendida). Vacio = no cambia de sprite.")]
+    [SerializeField] Sprite chargingSprite;
+    [Tooltip("Sprite normal. Vacio = el que ya tiene el SpriteRenderer al empezar.")]
+    [SerializeField] Sprite idleSprite;
+
     State state = State.Chasing;
 
     // Este enemigo mata con la explosion, no por contacto.
     protected override bool ContactKills => false;
 
-    protected override void OnReset() => state = State.Chasing;
+    protected override void Awake()
+    {
+        base.Awake();
+        if (idleSprite == null && sr != null) idleSprite = sr.sprite;
+    }
+
+    protected override void OnReset()
+    {
+        state = State.Chasing;
+        if (sr != null && idleSprite != null) sr.sprite = idleSprite;
+    }
 
     protected override Vector2 ComputeDesiredVelocity()
     {
@@ -64,6 +80,8 @@ public class AreaEnemy : Enemy
     {
         if (state == State.Fuse) return;
         state = State.Fuse;
+        if (sr != null && chargingSprite != null) sr.sprite = chargingSprite;
+        Sfx.Play(SfxId.FuseHiss, transform.position);
         if (juice != null) juice.Play("Charge", Vector2.zero, fuseTime, chargeIntensity);   // dura lo que la mecha
         StartCoroutine(FuseRoutine());
     }
@@ -96,6 +114,7 @@ public class AreaEnemy : Enemy
     void Explode()
     {
         Vector2 center = transform.position;
+        Sfx.Play(SfxId.Explosion, center);
 
         if (explosionPrefab != null)
             Destroy(Instantiate(explosionPrefab, center, Quaternion.identity), explosionEffectLifetime);

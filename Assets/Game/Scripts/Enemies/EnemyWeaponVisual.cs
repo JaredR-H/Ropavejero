@@ -28,6 +28,8 @@ public class EnemyWeaponVisual : MonoBehaviour
     [SerializeField] AnimationCurve strikeCurve = DefaultStrikeCurve();
     [Tooltip("Lo que tarda la espada en volver a su sitio despues del golpe.")]
     [SerializeField] float returnTime = 0.25f;
+    [Tooltip("Estela durante el golpe de la espada (se crea sola en el sprite del arma).")]
+    [SerializeField] bool useTrail = true;
 
     Transform owner;
     PlayerHealth player;
@@ -36,6 +38,7 @@ public class EnemyWeaponVisual : MonoBehaviour
     float offsetAngle;
     bool initialized;
     Coroutine anim;
+    SwingTrail trail;
 
     static AnimationCurve DefaultStrikeCurve()
     {
@@ -51,6 +54,7 @@ public class EnemyWeaponVisual : MonoBehaviour
     {
         owner = transform.parent != null ? transform.parent : transform;
         if (weaponJuice == null && weaponRenderer != null) weaponJuice = weaponRenderer.GetComponent<JuiceAnimator>();
+        if (useTrail && weaponRenderer != null) trail = SwingTrail.For(weaponRenderer);
     }
 
     void Start()
@@ -118,12 +122,14 @@ public class EnemyWeaponVisual : MonoBehaviour
     /// Carga: la espada se echa hacia atras con una vibracion corta, y se queda atras hasta el golpe.
     public void Charge(float duration)
     {
+        Sfx.Play(SfxId.EnemyCharge, transform.position);
         StartAnim(ChargeRoutine(Mathf.Max(0.02f, duration)));
     }
 
     /// Golpe: la espada pasa de atras a adelante siguiendo la curva y despues vuelve a su sitio.
     public void Strike(float duration)
     {
+        Sfx.Play(SfxId.EnemySwing, transform.position);
         StartAnim(StrikeRoutine(Mathf.Max(0.02f, duration)));
     }
 
@@ -132,6 +138,7 @@ public class EnemyWeaponVisual : MonoBehaviour
     {
         StopAnim();
         offsetAngle = 0f;
+        if (trail != null) trail.Clear();
     }
 
     /// Corta todo: arco y espada.
@@ -170,6 +177,7 @@ public class EnemyWeaponVisual : MonoBehaviour
     IEnumerator StrikeRoutine(float duration)
     {
         float start = offsetAngle;
+        if (trail != null) trail.Begin();
         float t = 0f;
         while (t < duration)
         {
@@ -178,6 +186,7 @@ public class EnemyWeaponVisual : MonoBehaviour
             offsetAngle = Mathf.LerpUnclamped(start, -strikeAngle, strikeCurve.Evaluate(k));
             yield return null;
         }
+        if (trail != null) trail.End();
 
         float from = offsetAngle;
         t = 0f;

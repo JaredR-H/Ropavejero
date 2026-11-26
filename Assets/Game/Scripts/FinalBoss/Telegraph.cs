@@ -25,6 +25,7 @@ public static class Telegraph
     public static TelegraphHandle Rect(Vector2 origin, Vector2 direction, float length, float width, float duration)
     {
         var m = TelegraphManager.Get();
+        Sfx.Play(SfxId.Telegraph, origin);            // varios a la vez suenan como uno (cooldown del sonido)
         return m != null ? m.ShowRect(origin, direction, length, width, duration) : null;
     }
 
@@ -32,6 +33,7 @@ public static class Telegraph
     public static TelegraphHandle Circle(Vector2 center, float radius, float duration)
     {
         var m = TelegraphManager.Get();
+        Sfx.Play(SfxId.Telegraph, center);
         return m != null ? m.ShowCircle(center, radius, duration) : null;
     }
 }

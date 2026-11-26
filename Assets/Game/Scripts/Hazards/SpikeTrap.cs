@@ -93,6 +93,11 @@ public class SpikeTrap : MonoBehaviour, IResettable
 
     void SetState(State s)
     {
+        if (isActiveAndEnabled && s != state)
+        {
+            if (s == State.Active) Sfx.Play(SfxId.SpikesUp, transform.position);
+            else if (state == State.Active) Sfx.Play(SfxId.SpikesDown, transform.position, 0.7f);
+        }
         state = s;
         hitbox.enabled = (s == State.Active);   // el collider solo existe con los spikes levantados
 

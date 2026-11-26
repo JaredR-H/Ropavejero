@@ -64,6 +64,11 @@ public class UnstableFloor : MonoBehaviour, IResettable
 
     void SetState(State s)
     {
+        if (isActiveAndEnabled && s != state)
+        {
+            if (s == State.Cracking) Sfx.Play(SfxId.FloorCrack, transform.position);
+            else if (s == State.Fallen) Sfx.Play(SfxId.FloorFall, transform.position);
+        }
         state = s;
         if (swapper == null) return;
         swapper.Show(s == State.Fallen ? fallenSprite : (s == State.Cracking ? crackingSprite : stableSprite));

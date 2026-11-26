@@ -4,6 +4,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// Boton de un puzzle. Se activa golpeandolo con la espada, pisandolo, o las dos cosas.
+/// Los puzzles (SingleButtonPuzzle, OrderedButtonsPuzzle, SequencePuzzle, TimedButtonsPuzzle, GatedPuzzle) lo controlan:
+/// aqui solo esta el boton y su aspecto.
+/// Prefab: SpriteRenderer + un Collider2D (para golpearlo; con Is Trigger si se pisa) + este script.
 public class PuzzleButton : MonoBehaviour, IHittable
 {
     public enum PressMode { Hit, Step, HitOrStep }
@@ -108,6 +112,7 @@ public class PuzzleButton : MonoBehaviour, IHittable
         }
         if (pressDustScale > 0f) Vfx.Play(VfxKind.Dust, transform.position, Vector2.up, pressDustScale);
         if (pressStarsScale > 0f) Vfx.Play(VfxKind.Stars, transform.position, Vector2.up, pressStarsScale);
+        Sfx.Play(SfxId.ButtonOn, transform.position);
 
         Pressed?.Invoke(this);
         onPressed?.Invoke();
@@ -125,6 +130,7 @@ public class PuzzleButton : MonoBehaviour, IHittable
         pressed = false;
         unlatchRoutine = null;
         Apply();
+        Sfx.Play(SfxId.ButtonOff, transform.position, 0.8f);
     }
 
     // ---------- Control desde el puzzle ----------
@@ -133,6 +139,7 @@ public class PuzzleButton : MonoBehaviour, IHittable
     /// Hundirlo o levantarlo sin que cuente como una pulsacion.
     public void SetPressed(bool value)
     {
+        if (pressed && !value && isActiveAndEnabled) Sfx.Play(SfxId.ButtonOff, transform.position, 0.8f);
         pressed = value;
         Apply();
     }
@@ -154,6 +161,7 @@ public class PuzzleButton : MonoBehaviour, IHittable
     /// Parpadeo rojo de error.
     public void FlashWrong(float duration = 0.4f)
     {
+        if (isActiveAndEnabled) Sfx.Play(SfxId.PuzzleWrong, transform.position);
         if (wrongRoutine != null) StopCoroutine(wrongRoutine);
         wrongRoutine = StartCoroutine(WrongRoutine(duration));
     }

@@ -66,6 +66,7 @@ public class ArrowTrap : MonoBehaviour, IResettable
         arrow.Launch(direction, arrowSpeed);
         liveArrows.Add(arrow);
         if (fireDustScale > 0f) Vfx.Play(VfxKind.Dust, spawnPoint.position, direction, fireDustScale);
+        Sfx.Play(SfxId.ArrowFire, spawnPoint.position);
     }
 
     void OnDrawGizmosSelected()

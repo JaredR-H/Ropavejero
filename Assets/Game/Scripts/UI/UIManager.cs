@@ -45,6 +45,12 @@ public class UIManager : MonoBehaviour
 
     [Header("Paneles")]
     [SerializeField] GameObject gameOverPanel;
+    [Tooltip("Opcional: pantalla de Game Over con escenario (EndScreen). Si esta, se usa en vez del panel simple.")]
+    [SerializeField] EndScreen gameOverScreen;
+    [Tooltip("Opcional: pantalla de Victoria con escenario (EndScreen).")]
+    [SerializeField] EndScreen winScreen;
+    [Tooltip("Suena un 'tic' cada segundo cuando queda poco tiempo.")]
+    [SerializeField] bool tickWhenLow = true;
     [SerializeField] GameObject winPanel;
     [SerializeField] TMP_Text winStatsText;
 
@@ -107,6 +113,11 @@ public class UIManager : MonoBehaviour
 
         int seconds = Mathf.CeilToInt(Mathf.Max(0f, secondsLeft));
         bool low = secondsLeft <= lowTimeThreshold;
+
+        // Tic-tac con poco tiempo (una vez por segundo, mas agudo mientras menos queda)
+        if (tickWhenLow && low && seconds != lastTickSecond && seconds > 0)
+            Sfx.Play(SfxId.TimerTick, 1f, 1f + (lowTimeThreshold - seconds) * 0.025f);
+        lastTickSecond = seconds;
 
         if (timerBounce != null)
         {
@@ -213,16 +224,28 @@ public class UIManager : MonoBehaviour
         messageRoutine = null;
     }
 
+    int lastTickSecond = -1;
+
     public void ShowGameOver()
     {
         HidePause();
-        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+        if (gameOverScreen != null) gameOverScreen.Show();
+        else
+        {
+            Sfx.Music(MusicId.GameOver, 1f);
+            if (gameOverPanel != null) gameOverPanel.SetActive(true);
+        }
     }
 
     public void ShowWin(int deaths, float totalTime, int items, int totalItems)
     {
         HidePause();
-        if (winPanel != null) winPanel.SetActive(true);
+        if (winScreen != null) winScreen.Show();
+        else
+        {
+            Sfx.Music(MusicId.Win, 1f);
+            if (winPanel != null) winPanel.SetActive(true);
+        }
         if (winStatsText != null)
             winStatsText.text = "Muertes: " + deaths + "\nTiempo: " + FormatTime(totalTime) + "\nObjetos: " + items + "/" + totalItems;
     }
@@ -231,6 +254,8 @@ public class UIManager : MonoBehaviour
     {
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
         if (winPanel != null) winPanel.SetActive(false);
+        if (gameOverScreen != null) gameOverScreen.Hide();
+        if (winScreen != null) winScreen.Hide();
         HidePause();
         if (messageText != null && messageRoutine == null) messageText.gameObject.SetActive(false);
     }
@@ -245,6 +270,7 @@ public class UIManager : MonoBehaviour
 
         // Primero se activa: asi el JuiceAnimator hace su Awake antes de configurarlo y no pisa el perfil.
         pausePanel.SetActive(true);
+        if (AudioManager.Instance != null) AudioManager.Instance.DuckMusic(true);
         if (pauseWindow == null) return;
 
         if (pauseJuice == null)
@@ -260,6 +286,7 @@ public class UIManager : MonoBehaviour
 
     public void HidePause()
     {
+        if (pausePanel != null && pausePanel.activeSelf && AudioManager.Instance != null) AudioManager.Instance.DuckMusic(false);
         if (pausePanel != null) pausePanel.SetActive(false);
     }
 

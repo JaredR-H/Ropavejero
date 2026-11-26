@@ -193,6 +193,7 @@ public class Collectible : MonoBehaviour, IResettable
         if (GameManager.Instance != null && !GameManager.Instance.IsPlaying) return;
 
         Collected = true;
+        Sfx.Play(SfxId.Collect, transform.position);
         if (GameManager.Instance != null) GameManager.Instance.OnCollectibleCollected(this);
         if (room != null) room.OnCollectibleTaken();
 
@@ -230,6 +231,16 @@ public class Collectible : MonoBehaviour, IResettable
         SetSpriteAlpha(0f);
         if (flasher != null) flasher.SetFlashAmount(0f);
         pickupRoutine = null;
+        gameObject.SetActive(false);
+    }
+
+    /// SOLO PRUEBAS: lo da por recogido y guardado sin animacion (GameManager > Debug > Give All Items).
+    public void DebugCollect()
+    {
+        if (Collected) return;
+        Collected = true;
+        Banked = true;
+        if (GameManager.Instance != null) GameManager.Instance.OnCollectibleCollected(this);
         gameObject.SetActive(false);
     }
 

@@ -1,0 +1,634 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15ce61bb1d97bb942af36ed933e5d49d, type: 3}
+  m_Name: SoundLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::SoundLibrary
+  sounds:
+  - id: 0
+    clips:
+    - {fileID: 8300000, guid: 97b86ad4d10e5e042a84bea6890c97c3, type: 3}
+    volume: 1
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 1
+    clips:
+    - {fileID: 8300000, guid: 4d614ca3317ed4b48a94caa6e2965e22, type: 3}
+    volume: 1
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 2
+    clips:
+    - {fileID: 8300000, guid: 40ef57d1063756245b70dd1944e3d264, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 10
+    clips:
+    - {fileID: 8300000, guid: d38c4eaa395eb8248acb118aa6fcd1ba, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 1, y: 1}
+  - id: 11
+    clips:
+    - {fileID: 8300000, guid: 40ef57d1063756245b70dd1944e3d264, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 12
+    clips:
+    - {fileID: 8300000, guid: 67b8f0c0201bb4243a239aa3423a88e0, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 20
+    clips:
+    - {fileID: 8300000, guid: edb545b83455a874a8a076aee7f6fbaa, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 1}
+  - id: 21
+    clips:
+    - {fileID: 8300000, guid: 9ac5ee7ebae51434f9d02d3f725c389d, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 22
+    clips:
+    - {fileID: 8300000, guid: 40ef57d1063756245b70dd1944e3d264, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 23
+    clips:
+    - {fileID: 8300000, guid: 706425ac3c9ba70498ccec2bf4ff6f20, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0.5, y: 2}
+  - id: 24
+    clips:
+    - {fileID: 8300000, guid: 40ef57d1063756245b70dd1944e3d264, type: 3}
+    volume: 0.8
+    pitch: {x: 0.65, y: 0.75}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 25
+    clips:
+    - {fileID: 8300000, guid: d0f4d06d3e98fcd4f9733ea40f2b9454, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 1}
+  - id: 26
+    clips:
+    - {fileID: 8300000, guid: fbfe49af58e72d64f9742b3664aca99d, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 5.7, y: 1}
+  - id: 27
+    clips:
+    - {fileID: 8300000, guid: fbfe49af58e72d64f9742b3664aca99d, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 3, y: 1}
+  - id: 28
+    clips:
+    - {fileID: 8300000, guid: bf82fde5bc794344fa719b2a0aa336bb, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 1}
+  - id: 29
+    clips:
+    - {fileID: 8300000, guid: a2d9654e98d03ca4fbf8f91101f93716, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 40
+    clips:
+    - {fileID: 8300000, guid: edb545b83455a874a8a076aee7f6fbaa, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 1}
+  - id: 41
+    clips:
+    - {fileID: 8300000, guid: 40ef57d1063756245b70dd1944e3d264, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 42
+    clips:
+    - {fileID: 8300000, guid: fbfe49af58e72d64f9742b3664aca99d, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 1}
+  - id: 43
+    clips:
+    - {fileID: 8300000, guid: fbfe49af58e72d64f9742b3664aca99d, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 3, y: 1}
+  - id: 44
+    clips:
+    - {fileID: 8300000, guid: fbfe49af58e72d64f9742b3664aca99d, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 1}
+  - id: 45
+    clips:
+    - {fileID: 8300000, guid: ff771bba36ad0944a9d89276322d3e61, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 46
+    clips:
+    - {fileID: 8300000, guid: ec3bf6c29bb0cd14f86e3d6ded5ed7e6, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 47
+    clips:
+    - {fileID: 8300000, guid: 706425ac3c9ba70498ccec2bf4ff6f20, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0.5, y: 2}
+  - id: 48
+    clips:
+    - {fileID: 8300000, guid: 40ef57d1063756245b70dd1944e3d264, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 49
+    clips:
+    - {fileID: 8300000, guid: 614cd18199fd78648b28c49d83c22d30, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0.6, y: 1}
+  - id: 50
+    clips:
+    - {fileID: 8300000, guid: 706425ac3c9ba70498ccec2bf4ff6f20, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0.5, y: 1}
+  - id: 60
+    clips:
+    - {fileID: 8300000, guid: 74641c1ef0465034d9ebff28ddfa50f8, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 61
+    clips:
+    - {fileID: 8300000, guid: 854749c51f4dba8429c706c85e55914c, type: 3}
+    volume: 0.7
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 62
+    clips:
+    - {fileID: 8300000, guid: fbfe49af58e72d64f9742b3664aca99d, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 1}
+  - id: 63
+    clips: []
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 64
+    clips:
+    - {fileID: 8300000, guid: 0ad44319f76e58a45b1039fa3d1491e3, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 65
+    clips:
+    - {fileID: 8300000, guid: 0ad44319f76e58a45b1039fa3d1491e3, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 66
+    clips:
+    - {fileID: 8300000, guid: b55d61023b798fe4eb9eaff010378870, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 67
+    clips:
+    - {fileID: 8300000, guid: a643e71b53af81842afedc4f4963441a, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 69
+    clips: []
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 80
+    clips:
+    - {fileID: 8300000, guid: 614cd18199fd78648b28c49d83c22d30, type: 3}
+    volume: 0.492
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 0.5}
+  - id: 81
+    clips:
+    - {fileID: 8300000, guid: 614cd18199fd78648b28c49d83c22d30, type: 3}
+    volume: 0.456
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0.6, y: 1}
+  - id: 82
+    clips:
+    - {fileID: 8300000, guid: a2d9654e98d03ca4fbf8f91101f93716, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 1}
+  - id: 83
+    clips: []
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 84
+    clips:
+    - {fileID: 8300000, guid: b2a0c6c070217304388112074d1ed910, type: 3}
+    volume: 0.526
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 1, y: 1}
+  - id: 85
+    clips:
+    - {fileID: 8300000, guid: 6fff4cb3618cf844f95633460ddc0a35, type: 3}
+    volume: 0.604
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 86
+    clips: []
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 87
+    clips: []
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 100
+    clips:
+    - {fileID: 8300000, guid: 46888cae03524f947a55d03ae0c226e4, type: 3}
+    volume: 0.8
+    pitch: {x: 0.6, y: 0.6}
+    cooldown: 0.03
+    maxVoices: 1
+    reverb: 1
+    slices: []
+  - id: 101
+    clips:
+    - {fileID: 8300000, guid: 10c1a2203785bc448a3619ed91b850f3, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 102
+    clips:
+    - {fileID: 8300000, guid: 10c1a2203785bc448a3619ed91b850f3, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 103
+    clips:
+    - {fileID: 8300000, guid: 10c1a2203785bc448a3619ed91b850f3, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 104
+    clips:
+    - {fileID: 8300000, guid: 40ef57d1063756245b70dd1944e3d264, type: 3}
+    volume: 0.8
+    pitch: {x: 0.6, y: 0.7}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 105
+    clips:
+    - {fileID: 8300000, guid: 57d5e6e65c7614a4dbc72519c8184cc5, type: 3}
+    volume: 0.702
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 106
+    clips:
+    - {fileID: 8300000, guid: 7975e69630bf6e349b1238c442042fab, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 3.4, y: 1}
+  - id: 107
+    clips:
+    - {fileID: 8300000, guid: d0f4d06d3e98fcd4f9733ea40f2b9454, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 1}
+  - id: 108
+    clips: []
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 109
+    clips:
+    - {fileID: 8300000, guid: fbfe49af58e72d64f9742b3664aca99d, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 3, y: 1}
+  - id: 110
+    clips:
+    - {fileID: 0}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 111
+    clips:
+    - {fileID: 8300000, guid: 3564f1dfe8b8aa143b50d0b8aba96a73, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 112
+    clips:
+    - {fileID: 8300000, guid: ec3bf6c29bb0cd14f86e3d6ded5ed7e6, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 113
+    clips:
+    - {fileID: 8300000, guid: 5baa8bfa3cac09141a8e8a27f0214a7c, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 0, y: 1}
+  - id: 114
+    clips:
+    - {fileID: 8300000, guid: fd04f3329c8f5c14580a5af3f0731e4b, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices:
+    - {x: 1.7, y: 2}
+  - id: 120
+    clips:
+    - {fileID: 8300000, guid: 67b8f0c0201bb4243a239aa3423a88e0, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 121
+    clips: []
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 122
+    clips: []
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  - id: 123
+    clips:
+    - {fileID: 8300000, guid: 57d5e6e65c7614a4dbc72519c8184cc5, type: 3}
+    volume: 0.8
+    pitch: {x: 0.95, y: 1.05}
+    cooldown: 0.03
+    maxVoices: 4
+    reverb: 1
+    slices: []
+  music:
+  - id: 1
+    clip: {fileID: 8300000, guid: a5242128802e9ec4b9d2ae6442dc29ba, type: 3}
+    volume: 0.7
+    loop: 1
+    loopStart: 16
+  - id: 2
+    clip: {fileID: 8300000, guid: 5a8f0c22ee0a4e94583ba1088721a664, type: 3}
+    volume: 0.7
+    loop: 1
+    loopStart: 0
+  - id: 3
+    clip: {fileID: 0}
+    volume: 0.7
+    loop: 1
+    loopStart: 0
+  - id: 4
+    clip: {fileID: 8300000, guid: 06199e96932f9b140ba15d003f190492, type: 3}
+    volume: 0.7
+    loop: 1
+    loopStart: 0
+  - id: 5
+    clip: {fileID: 8300000, guid: a5242128802e9ec4b9d2ae6442dc29ba, type: 3}
+    volume: 0.7
+    loop: 1
+    loopStart: 16
+  ambience:
+  - id: 1
+    clip: {fileID: 8300000, guid: 8c9c9dcd1a4b8c2498cb9508759f1b27, type: 3}
+    volume: 0.2
+  - id: 2
+    clip: {fileID: 8300000, guid: 8c9c9dcd1a4b8c2498cb9508759f1b27, type: 3}
+    volume: 0.2
+  - id: 3
+    clip: {fileID: 8300000, guid: 8c9c9dcd1a4b8c2498cb9508759f1b27, type: 3}
+    volume: 0.3

@@ -26,6 +26,11 @@ public class Wave
     public WaveEntry[] entries;
 }
 
+/// Oleadas de enemigos de una sala. Va en un objeto dentro del Room (normalmente una sala de tipo Puzzle).
+/// Flujo: el jugador entra -> se bloquean las puertas -> aparece la oleada -> se derrotan todos -> aparece la siguiente
+/// -> sin mas oleadas -> la sala queda COMPLETADA y las puertas "Always Open" se vuelven a abrir.
+/// Una sala completada no vuelve a generar enemigos al salir y volver a entrar.
+/// Si el jugador muere antes de completarla, las oleadas empiezan de nuevo.
 public class RoomEncounter : MonoBehaviour, IResettable, IRoomObjective
 {
     [Header("Enemigos al azar")]
@@ -48,6 +53,10 @@ public class RoomEncounter : MonoBehaviour, IResettable, IRoomObjective
     [Header("Efectos")]
     [Tooltip("Prefab opcional que aparece donde nace cada enemigo (debe destruirse solo).")]
     [SerializeField] GameObject spawnEffect;
+    [Tooltip("Si no hay Spawn Effect: nube de polvo (la de derrota, sin estrellas) donde aparece cada enemigo. 0 = nada.")]
+    [SerializeField] float spawnPoofScale = 1.5f;
+    [Tooltip("Donde sale la nube respecto al punto de aparicion (los pies). (0, 0.4) = mas o menos el centro del cuerpo.")]
+    [SerializeField] Vector2 spawnPoofOffset = new Vector2(0f, 0.4f);
     [Tooltip("Segundos entre un enemigo y el siguiente dentro de la oleada.")]
     [SerializeField] float spawnStagger = 0.12f;
     [Tooltip("Se ejecuta al completar todas las oleadas (por ejemplo, abrir un cofre).")]
@@ -67,6 +76,7 @@ public class RoomEncounter : MonoBehaviour, IResettable, IRoomObjective
 
     void Awake() => room = GetComponentInParent<Room>();
 
+    /// La llama Room cuando el jugador entra (o reaparece en la sala).
     public void Begin()
     {
         if (Completed || running != null) return;
@@ -77,6 +87,7 @@ public class RoomEncounter : MonoBehaviour, IResettable, IRoomObjective
             return;
         }
 
+        // Las puertas las cierra Room al entrar (NotifyEntered), para todos los objetivos a la vez.
         running = StartCoroutine(RunWaves());
     }
 
@@ -90,6 +101,7 @@ public class RoomEncounter : MonoBehaviour, IResettable, IRoomObjective
             yield return WaitPlaying(wave.delayBefore);
             yield return SpawnWave(wave);
 
+            // Hasta que no quede ninguno de la oleada, no hay siguiente.
             while (CountAlive() > 0) yield return null;
         }
 
@@ -113,6 +125,8 @@ public class RoomEncounter : MonoBehaviour, IResettable, IRoomObjective
 
                 Vector2 position = PickPosition();
                 if (spawnEffect != null) Destroy(Instantiate(spawnEffect, position, Quaternion.identity), 1.5f);
+                else if (spawnPoofScale > 0f) Vfx.Play(VfxKind.SpawnPoof, position + spawnPoofOffset, Vector2.up, spawnPoofScale);
+                Sfx.Play(SfxId.EnemySpawn, position);
 
                 Enemy enemy = Instantiate(prefab, position, Quaternion.identity, room != null ? room.transform : transform);
                 spawned.Add(enemy);

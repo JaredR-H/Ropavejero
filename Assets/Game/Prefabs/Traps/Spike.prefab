@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4002870720466205898}
   - component: {fileID: 5493758228568100633}
   m_Layer: 0
-  m_Name: SPIKE
+  m_Name: Spike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -961945979
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 6432547573521612359, guid: e842beec52e52c24ea42c27bf6823d11, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

@@ -27,6 +27,7 @@ public class Arrow : MonoBehaviour
         {
             Vector2 v = rb != null ? rb.linearVelocity : Vector2.zero;
             Vfx.Play(VfxKind.Impact, transform.position, -v, impactScale);   // chispas hacia atras, como un rebote
+            Sfx.Play(SfxId.ArrowImpact, transform.position);
             Destroy(gameObject);
             return;
         }

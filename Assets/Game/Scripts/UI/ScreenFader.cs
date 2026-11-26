@@ -74,6 +74,12 @@ public class ScreenFader : MonoBehaviour
     /// Carga una escena por nombre con el fundido. Nombre vacio = recargar la actual.
     public void LoadScene(string sceneName)
     {
+        // La musica y el ambiente se apagan junto con la pantalla (la escena nueva pone los suyos)
+        if (!IsBusy && group != null)
+        {
+            Sfx.StopMusic(pressDelay + fadeOutDuration);
+            Sfx.Ambience(AmbienceId.None, pressDelay + fadeOutDuration);
+        }
         FadeOutThen(() =>
         {
             Time.timeScale = 1f;

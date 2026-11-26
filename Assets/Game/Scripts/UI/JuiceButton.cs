@@ -21,6 +21,10 @@ public class JuiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] string hoverShot = "ButtonHover";
     [SerializeField] string pressShot = "ButtonPress";
     [SerializeField] string releaseShot = "ButtonRelease";
+    [Tooltip("Sonido al pasar el mouse por encima (None = sin sonido).")]
+    [SerializeField] SfxId hoverSound = SfxId.UIHover;
+    [Tooltip("Sonido al pulsar.")]
+    [SerializeField] SfxId clickSound = SfxId.UIClick;
 
     Selectable selectable;
     bool hovering;
@@ -49,6 +53,7 @@ public class JuiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         hovering = true;
         if (!Interactable) return;
         juice.Play(hoverShot);
+        if (hoverSound != SfxId.None) Sfx.Play(hoverSound);
         Refresh();
     }
 
@@ -64,6 +69,7 @@ public class JuiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (!Interactable) return;
         pressed = true;
         juice.Play(pressShot);
+        if (clickSound != SfxId.None) Sfx.Play(clickSound);
         Refresh();
     }
 

@@ -2,8 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// El Ropavejero. Camina lento hacia el jugador y elige un ataque al azar, con mas probabilidad segun la distancia:
+/// cerca = golpe frontal (1 a 3 seguidos), lejos = proyectiles en 360 grados o el saco, y a veces invoca enemigos.
+/// Todos los ataques se avisan en el suelo con rectangulos o circulos rojos que parpadean.
+/// Los golpes no lo interrumpen (empuje sutil). Al derrotarlo se gana el juego.
+/// Va en el objeto raiz del jefe (Rigidbody2D + Collider2D + hijo Visual con SpriteRenderer y JuiceAnimator),
+/// dentro de la sala del jefe (Room con Keep State On Death marcado).
 public class BossController : Enemy, IRoomObjective
 {
+    /// El jefe de la sala actual (null si no hay).
     public static BossController Active { get; private set; }
 
     enum Attack { None, Melee, Ranged, Summon, Sack }
@@ -145,6 +152,8 @@ public class BossController : Enemy, IRoomObjective
     [SerializeField] float explosionScale = 2.6f;
     [Tooltip("Tamano de la nube grande de la explosion final (0 = sin nube).")]
     [SerializeField] float bossPoofScale = 3.5f;
+    [Tooltip("Tamano de la nube de polvo donde aparece cada esbirro invocado.")]
+    [SerializeField] float summonPoofScale = 1.5f;
     [SerializeField, Range(0f, 1f)] float explosionShake = 1f;
     [Tooltip("Segundos (reales) despues de la explosion antes del fundido a negro.")]
     [SerializeField] float afterExplosion = 0.9f;
@@ -228,6 +237,7 @@ public class BossController : Enemy, IRoomObjective
         if (juice != null) juice.Play("ArmsUp", Vector2.zero, 0.9f, 1.3f);
         if (GameFeel.Instance != null) GameFeel.Instance.AddShake(introRoarShake);
         Vfx.Play(VfxKind.Dust, rb.position, Vector2.up, 2f);
+        Sfx.Play(SfxId.BossRoar, rb.position);
 
         yield return WaitReal(introHold);
         yield return cinematic.EndFocus(true);
@@ -350,6 +360,7 @@ public class BossController : Enemy, IRoomObjective
             foreach (var col in Physics2D.OverlapBoxAll(center, new Vector2(meleeLength, meleeWidth), angle))
                 HazardUtil.TryKillPlayer(col, rb.position, false);
             Vfx.Play(VfxKind.Dust, center, dir, 1.4f);
+            Sfx.Play(SfxId.BossSwing, center);
             if (GameFeel.Instance != null) GameFeel.Instance.AddShake(meleeShake, dir);
 
             yield return WaitActive(meleeStrikeTime * 0.5f);
@@ -394,6 +405,7 @@ public class BossController : Enemy, IRoomObjective
                 Track(p.gameObject);
             }
             Vfx.Play(VfxKind.Dust, origin, Vector2.up, 1.2f);
+            Sfx.Play(SfxId.BossVolley, origin);
             if (GameFeel.Instance != null) GameFeel.Instance.AddShake(0.3f);
 
             yield return WaitActive(rangedBetween * Pace);
@@ -405,6 +417,7 @@ public class BossController : Enemy, IRoomObjective
     {
         SwapSprite(summonSprite);
         if (juice != null) juice.Play("ArmsUp", Vector2.zero, summonCast + summonTelegraph);
+        Sfx.Play(SfxId.BossSummon, rb.position);
         yield return WaitActive(summonCast * 0.5f);
 
         int count = Mathf.Min(Random.Range(summonCount.x, Mathf.Max(summonCount.x, summonCount.y) + 1), maxMinions - AliveMinions());
@@ -423,7 +436,8 @@ public class BossController : Enemy, IRoomObjective
             if (prefab == null) continue;
             Enemy e = Instantiate(prefab, p, Quaternion.identity, room != null ? room.transform : null);
             minions.Add(e);
-            Vfx.Play(VfxKind.Dust, p, Vector2.up, 1.3f);
+            Vfx.Play(VfxKind.SpawnPoof, p + Vector2.up * 0.4f, Vector2.up, summonPoofScale);
+            Sfx.Play(SfxId.EnemySpawn, p);
         }
         nextSummonTime = Time.time + summonCooldown;
 
@@ -483,6 +497,7 @@ public class BossController : Enemy, IRoomObjective
             // Fallo: queda "vendido" un momento y el jugador puede pegarle tranquilo
             mode = Mode.Stunned;
             vulnerable = true;
+            Sfx.Play(SfxId.BossStun, rb.position);
             SwapSprite(stunnedSprite);
             float left = stunTime;
             while (left > 0f && !defeated)
@@ -514,6 +529,7 @@ public class BossController : Enemy, IRoomObjective
         Vfx.Play(VfxKind.HitEnemy, body != null ? (Vector2)body.bounds.center : rb.position, direction,
                  hitVfxScale * (feelMultiplier > 1f ? 1.6f : 1.2f));
         if (BossHealthBar.Instance != null) BossHealthBar.Instance.SetValue((float)Mathf.Max(0, health) / maxHealth);
+        Sfx.Play(SfxId.BossHit, rb.position, 1f, vulnerable ? 0.9f : 1f);
 
         if (health <= 0) Defeat(direction);
     }
@@ -538,6 +554,8 @@ public class BossController : Enemy, IRoomObjective
     IEnumerator DefeatRoutine()
     {
         if (BossHealthBar.Instance != null) BossHealthBar.Instance.SetValue(0f);
+        Sfx.StopMusic(1.2f);                              // la musica del jefe se apaga; suena el rumor de la explosion
+        Sfx.Play(SfxId.BossDefeatRumble, rb.position);
 
         var cinematic = RoomCompleteCinematic.Instance;
         bool focused = cinematic != null && cinematic.BeginFocus(FocusPoint, defeatZoom, defeatHitShake, defeatHitStop);
@@ -585,6 +603,7 @@ public class BossController : Enemy, IRoomObjective
         if (juice != null) juice.ClearOverlay();
         if (flasher != null) flasher.SetFlashAmount(0f);
         Vfx.Play(VfxKind.Explosion, FocusPoint, Vector2.zero, explosionScale);
+        Sfx.Play(SfxId.BossExplosion, FocusPoint);
         if (bossPoofScale > 0f) Vfx.Play(VfxKind.Poof, FocusPoint, Vector2.up, bossPoofScale);
         if (GameFeel.Instance != null) GameFeel.Instance.AddShake(explosionShake);
         if (sr != null) sr.enabled = false;               // el jefe desaparece en la explosion

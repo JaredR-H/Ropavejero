@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// Tipos de efecto que se pueden pedir desde cualquier script con Vfx.Play(...).
 public enum VfxKind
 {
     Dust,        // polvo / humo: pasos, dash, flechas al salir, puertas, trampas que desaparecen
@@ -10,7 +9,8 @@ public enum VfxKind
     Impact,      // flecha o proyectil que choca con una pared o con alguien
     Explosion,   // explosion del enemigo de area y del jefe
     Stars,       // estrellitas sueltas: botones al pisarlos
-    Poof         // nube grande al derrotar a un enemigo o al jefe (mas grande que el personaje)
+    Poof,        // nube grande al derrotar a un enemigo o al jefe (mas grande que el personaje)
+    SpawnPoof    // la misma nube SIN estrellas: aparicion de enemigos y reaparicion del jugador
 }
 
 /// Atajo para lanzar efectos: Vfx.Play(VfxKind.Dust, posicion, direccion, escala).
@@ -90,6 +90,7 @@ public class VfxManager : MonoBehaviour
     [SerializeField, Min(0f)] float explosionSize = 1f;
     [SerializeField, Min(0f)] float starsSize = 1f;
     [SerializeField, Min(0f)] float poofSize = 1f;
+    [SerializeField, Min(0f)] float spawnPoofSize = 1f;
 
     [Header("Colores por defecto")]
     [SerializeField] Color dustColor = new Color(0.86f, 0.8f, 0.7f, 0.85f);
@@ -167,6 +168,7 @@ public class VfxManager : MonoBehaviour
             case VfxKind.Explosion: return explosionSize;
             case VfxKind.Stars: return starsSize;
             case VfxKind.Poof: return poofSize;
+            case VfxKind.SpawnPoof: return spawnPoofSize;
         }
         return 1f;
     }
@@ -232,7 +234,8 @@ public class VfxManager : MonoBehaviour
             case VfxKind.Impact: return BuildImpact();
             case VfxKind.Explosion: return BuildExplosion();
             case VfxKind.Stars: return BuildStars();
-            case VfxKind.Poof: return BuildPoof();
+            case VfxKind.Poof: return BuildPoof(true);
+            case VfxKind.SpawnPoof: return BuildPoof(false);
         }
         return null;
     }
@@ -333,7 +336,7 @@ public class VfxManager : MonoBehaviour
         return stars;
     }
 
-    ParticleSystem BuildPoof()
+    ParticleSystem BuildPoof(bool withStars)
     {
         // Nube grande de derrota: anillo de nubes que se abre y una nube central
         ParticleSystem ring = MakeSystem("Poof", transform);
@@ -364,6 +367,8 @@ public class VfxManager : MonoBehaviour
         cm.startColor = poofColor;
         Burst(core, 2, 3);
         PopAndShrink(core, poofColor);
+
+        if (!withStars) return ring;
 
         // Unas estrellitas que salen volando
         ParticleSystem stars = MakeSystem("Stars", ring.transform, Look.Star);

@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2615524510440645304
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4240995021476597873}
+  - component: {fileID: 5797450180993496877}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4240995021476597873
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2615524510440645304}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 836.4705, y: 410.24982, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5797450180993496877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2615524510440645304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b692621245dbd2d4eba9631ef2839654, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  library: {fileID: 11400000, guid: 9d50068147b8c7e45a1192f319053da3, type: 2}
+  musicGroup: {fileID: -2523976512937595592, guid: 15ec054075e57584a8e13f0908973b12, type: 2}
+  sfxGroup: {fileID: 197861131320159834, guid: 15ec054075e57584a8e13f0908973b12, type: 2}
+  sfxDryGroup: {fileID: 705158330075974372, guid: 15ec054075e57584a8e13f0908973b12, type: 2}
+  ambienceGroup: {fileID: -2970060265544360617, guid: 15ec054075e57584a8e13f0908973b12, type: 2}
+  fallbackReverb: 14
+  fallbackReverbOnMusic: 0
+  fallbackReverbOnAmbience: 1
+  voices: 24
+  stereoPan: 0.5
+  defaultMusicFade: 1.2
+  pauseDuck: 0.45
+  masterVolume: 1
+  musicVolume: 1
+  sfxVolume: 1

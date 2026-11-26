@@ -80,7 +80,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -961945979
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_Sprite: {fileID: -8191739510646017925, guid: 9bd20edcd5773214caf367b568a89a58, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -152,6 +152,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleButton
   pressMode: 1
   latch: 1
+  pressCooldown: 0.35
+  pressShake: 0.45
+  pressHitStop: 0.05
+  pressDustScale: 0.6
+  pressStarsScale: 1
   sr: {fileID: 4384872890067540372}
   idleSprite: {fileID: -8191739510646017925, guid: 9bd20edcd5773214caf367b568a89a58, type: 3}
   pressedSprite: {fileID: 6195944701763404407, guid: 9bd20edcd5773214caf367b568a89a58, type: 3}

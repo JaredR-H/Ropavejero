@@ -81,7 +81,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -595846255
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 8d63fce7a6b23bd4aafea644d253a311, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -175,3 +175,4 @@ MonoBehaviour:
   openOnRoomCompleted: 0
   openShot: DoorUnlock
   closeShot: DoorLock
+  dustScale: 1.3

@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
@@ -21,6 +23,16 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] Vector2 hitVfxOffset = new Vector2(0f, 0.4f);
     [SerializeField] float hitVfxScale = 1f;
 
+    [Header("Desaparecer al morir")]
+    [Tooltip("Al morir el personaje desaparece (sprite, sombra y espada) tapado por una nube de humo. Vuelve al reaparecer.")]
+    [SerializeField] bool hideOnDeath = true;
+    [Tooltip("Tamano de la nube de humo al morir (0 = sin nube).")]
+    [SerializeField] float deathPoofScale = 1.2f;
+    [Tooltip("Segundos (reales) entre que sale la nube y desaparece el sprite. Un poquito de espera hace que la nube lo 'tape'.")]
+    [SerializeField, Min(0f)] float deathHideDelay = 0.05f;
+    [Tooltip("Nube de polvo (sin estrellas) al REAPARECER tras morir. No sale al empezar la partida. 0 = nada.")]
+    [SerializeField] float respawnPoofScale = 1.2f;
+
     PlayerAttack attack;
     PlayerAnimator anim;
     Animator visualAnimator;
@@ -29,6 +41,8 @@ public class PlayerHealth : MonoBehaviour
     float invulnerableUntil;
     bool blinking;
     bool captured;
+    readonly List<Renderer> hiddenRenderers = new List<Renderer>();
+    Coroutine hideRoutine;
 
     public PlayerController Controller { get; private set; }
     public bool IsDead { get; private set; }
@@ -108,8 +122,16 @@ public class PlayerHealth : MonoBehaviour
         Controller.ApplyKnockback(dir, deathKnockbackForce);
 
         Vfx.Play(VfxKind.HitPlayer, (Vector2)transform.position + hitVfxOffset, dir, hitVfxScale);
+        Sfx.Play(SfxId.PlayerHit, transform.position);
+        Sfx.Play(SfxId.PlayerDeath, transform.position);
+        if (deathPoofScale > 0f) Vfx.Play(VfxKind.Poof, (Vector2)transform.position + hitVfxOffset, Vector2.up, deathPoofScale);
 
-        if (tintOnDeath && visualRenderer != null) visualRenderer.color = deathColor;
+        if (tintOnDeath && !hideOnDeath && visualRenderer != null) visualRenderer.color = deathColor;
+        if (hideOnDeath)
+        {
+            if (hideRoutine != null) StopCoroutine(hideRoutine);
+            hideRoutine = StartCoroutine(HideAfter(deathHideDelay));
+        }
         if (anim != null) anim.SetDead(true);
         SetAnimatorUnscaled(true);   // la animacion de muerte sigue durante el tiempo congelado
 
@@ -118,16 +140,66 @@ public class PlayerHealth : MonoBehaviour
 
     public void Revive(Vector3 position, float invulnerableSeconds = 0f)
     {
+        bool wasDead = IsDead;
         IsDead = false;
         captured = false;
         invulnerableUntil = 0f;
         GrantInvulnerability(invulnerableSeconds);
+        ShowRenderers();
         if (visualRenderer != null) visualRenderer.color = baseColor;
         if (anim != null) anim.SetDead(false);
         SetAnimatorUnscaled(false);
         if (attack != null) attack.CancelAttack();
         Controller.TeleportTo(position);
         Controller.InputEnabled = true;
+        if (wasDead && respawnPoofScale > 0f)
+            Vfx.Play(VfxKind.SpawnPoof, (Vector2)position + hitVfxOffset, Vector2.up, respawnPoofScale);
+        if (wasDead) Sfx.Play(SfxId.Respawn, position);
+    }
+
+    // Oculta todo lo que se ve del jugador (sprite, sombra, espada...) y recuerda que estaba visible para devolverlo igual
+    IEnumerator HideAfter(float delay)
+    {
+        if (delay > 0f) yield return new WaitForSecondsRealtime(delay);
+        hideRoutine = null;
+        if (!IsDead) yield break;
+        HideNow();
+    }
+
+    void HideNow()
+    {
+        foreach (var r in GetComponentsInChildren<Renderer>())
+        {
+            if (!r.enabled || r is ParticleSystemRenderer) continue;
+            r.enabled = false;
+            hiddenRenderers.Add(r);
+        }
+    }
+
+    /// Oculta al jugador (sprite, sombra, espada) sin matarlo. Lo usa el saco que cae cuando se acaba el tiempo.
+    public void HideVisuals()
+    {
+        if (hideRoutine != null)
+        {
+            StopCoroutine(hideRoutine);
+            hideRoutine = null;
+        }
+        HideNow();
+    }
+
+    /// Vuelve a mostrar lo que se oculto con HideVisuals.
+    public void ShowVisuals() => ShowRenderers();
+
+    void ShowRenderers()
+    {
+        if (hideRoutine != null)
+        {
+            StopCoroutine(hideRoutine);
+            hideRoutine = null;
+        }
+        foreach (var r in hiddenRenderers)
+            if (r != null) r.enabled = true;
+        hiddenRenderers.Clear();
     }
 
     void SetAnimatorUnscaled(bool unscaled)

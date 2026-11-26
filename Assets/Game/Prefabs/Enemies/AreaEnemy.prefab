@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4640792970548991903}
   - component: {fileID: 9019098200069841902}
   - component: {fileID: 4488485795448693962}
+  - component: {fileID: 238477734771153765}
   m_Layer: 0
   m_Name: AreaEnemy
   m_TagString: Untagged
@@ -122,6 +123,7 @@ MonoBehaviour:
   hitFeelBoost: 1.3
   defeatHideDelay: 0.1
   hitVfxScale: 1
+  defeatPoofScale: 1.2
   hitFlashTime: 0.1
   obstacleMask:
     serializedVersion: 2
@@ -139,6 +141,7 @@ MonoBehaviour:
   flasher: {fileID: 4488485795448693962}
   juice: {fileID: 919134546188985994}
   faceMoveDirection: 1
+  artFacesLeft: 0
   defeatEffect: {fileID: 0}
   triggerDistance: 0.95
   fuseTime: 1.2
@@ -150,6 +153,8 @@ MonoBehaviour:
   explosionShake: 1
   explosionHitStop: 0.06
   chargeIntensity: 1.5
+  chargingSprite: {fileID: 2339676586885753650, guid: 8ed9b2fc876c82d45be5d16fcf2de4a6, type: 3}
+  idleSprite: {fileID: -6690531328310788307, guid: 7e8e12dd44644e349ba3fea5f45835da, type: 3}
 --- !u!114 &4488485795448693962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +170,39 @@ MonoBehaviour:
   sr: {fileID: 1479311348887943625}
   flashMaterial: {fileID: 2100000, guid: 36dc90cc7c3dd424ea1c02538568f051, type: 2}
   fallbackColor: {r: 1, g: 1, b: 1, a: 0.35}
+--- !u!114 &238477734771153765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524555230192000309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6edae906b090e74dbc1192f82698d86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteStepAnimator
+  target: {fileID: 1479311348887943625}
+  juice: {fileID: 919134546188985994}
+  front:
+    idle: {fileID: -6690531328310788307, guid: 7e8e12dd44644e349ba3fea5f45835da, type: 3}
+    step: {fileID: 6706045141189955399, guid: 1b415f372df43cf4494a9aeec4ceb180, type: 3}
+    dash: {fileID: 0}
+  back:
+    idle: {fileID: 0}
+    step: {fileID: 0}
+    dash: {fileID: 0}
+  side:
+    idle: {fileID: 0}
+    step: {fileID: 0}
+    dash: {fileID: 0}
+  stepDistance: 0.45
+  minSpeed: 0.3
+  hopOnStep: 1
+  hopIntensity: 1
+  hopDuration: 0
+  keepLoopSquash: 0
+  respectOtherSprites: 1
 --- !u!1 &4744995728613467749
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,7 +230,7 @@ Transform:
   m_GameObject: {fileID: 4744995728613467749}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
-  m_LocalPosition: {x: 0.02, y: -0.493, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -244,10 +282,10 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -595846255
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -6690531328310788307, guid: 7e8e12dd44644e349ba3fea5f45835da, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 1
+  m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1.93, y: 2.44}

@@ -229,6 +229,7 @@ public class PlayerController : MonoBehaviour
         IsDashing = true;
         if (dashTrail != null) dashTrail.emitting = true;
         if (dashDustScale > 0f) Vfx.Play(VfxKind.Dust, rb.position + feetOffset, -dashDir, dashDustScale);
+        Sfx.Play(SfxId.Dash, rb.position);
         if (juice != null) juice.Play("Dash", dashDir);     // estiramiento pronunciado en la direccion del dash
     }
 

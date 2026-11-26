@@ -13,9 +13,11 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] float hitboxDistance = 0.9f;
     [Tooltip("Solo si no hay PlayerAim: altura de la mano.")]
     [SerializeField] Vector2 fallbackCenterOffset = new Vector2(0f, 0.4f);
-    [SerializeField] float windUp = 0.05f;
-    [SerializeField] float activeTime = 0.15f;
-    [SerializeField] float cooldown = 0.25f;
+    [Tooltip("Tiempo que se echa hacia atras antes de golpear (el hitbox aun no hace dano). Mas = arma mas pesada.")]
+    [SerializeField] float windUp = 0.16f;
+    [Tooltip("Tiempo del golpe con el hitbox activo (el arma barre con estela).")]
+    [SerializeField] float activeTime = 0.14f;
+    [SerializeField] float cooldown = 0.3f;
     [SerializeField] float moveSpeedWhileAttacking = 0.4f;
     [SerializeField] SlashEffect slashEffect;      // opcional
     [SerializeField] WeaponVisual weapon;          // opcional: el sprite del arma
@@ -223,7 +225,8 @@ public class PlayerAttack : MonoBehaviour
         PlaceHitbox(origin, dir, hitboxDistance, 1f);
 
         if (playerAnimator != null) playerAnimator.PlayAttack();
-        if (weapon != null) weapon.Swing(windUp + activeTime);
+        if (weapon != null) weapon.Swing(windUp, activeTime);
+        StartCoroutine(SoundAfter(SfxId.Swing, windUp));            // el "fiuu" justo cuando el baston baja
 
         yield return new WaitForSeconds(windUp);
         hitbox.gameObject.SetActive(true);
@@ -266,8 +269,10 @@ public class PlayerAttack : MonoBehaviour
 
     void UpdateCharging(bool held)
     {
+        bool wasMax = charge >= 1f;
         charge = Mathf.Min(1f, charge + Time.deltaTime / Mathf.Max(0.05f, maxChargeTime));
         bool atMax = charge >= 1f;
+        if (atMax && !wasMax) Sfx.Play(SfxId.ChargeReady, transform.position);
 
         ApplyChargeVisuals(atMax);
         if (weapon != null) weapon.SetCharge(charge);
@@ -280,6 +285,12 @@ public class PlayerAttack : MonoBehaviour
     }
 
     // Vibracion incremental con inclinacion hacia atras; al maximo: sin vibracion y parpadeo blanco por curva
+    IEnumerator SoundAfter(SfxId id, float delay)
+    {
+        if (delay > 0f) yield return new WaitForSeconds(delay);
+        Sfx.Play(id, transform.position);
+    }
+
     void ApplyChargeVisuals(bool atMax)
     {
         if (bodyJuice != null)
@@ -342,6 +353,7 @@ public class PlayerAttack : MonoBehaviour
         PlaceHitbox(origin, dir, distance, hitboxScale);
 
         if (weapon != null) weapon.SwingCharged(chargedWindUp + chargedActiveTime, weaponScale);
+        StartCoroutine(SoundAfter(SfxId.ChargedSwing, chargedWindUp));
 
         yield return new WaitForSeconds(chargedWindUp);
         hitbox.gameObject.SetActive(true);

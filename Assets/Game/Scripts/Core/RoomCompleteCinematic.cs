@@ -4,7 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[DefaultExecutionOrder(1000)]
+/// Mini cinematicas con barras negras y zoom. Dos usos:
+///  - Sala COMPLETADA: golpe -> barras -> zoom a la puerta mas cercana (o la unica salida) -> se ve como se abre ->
+///    la camara se abre y se abren las demas -> las trampas desaparecen con un puff -> se sigue jugando.
+///  - Enfoque (por ejemplo, la reja de un GatedPuzzle): barras -> zoom a la reja -> se abre -> se sigue jugando.
+/// La camara nunca se sale de la sala. Si no hay una en la escena, todo pasa al instante como antes.
+/// Va en la escena Game (un objeto vacio). La camara y las barras se buscan / crean solas.
+[DefaultExecutionOrder(1000)]   // despues de GameFeel: durante la cinematica la camara la mueve este script
 public class RoomCompleteCinematic : MonoBehaviour
 {
     public static RoomCompleteCinematic Instance { get; private set; }
@@ -20,6 +26,10 @@ public class RoomCompleteCinematic : MonoBehaviour
     [Tooltip("Shake (0 a 1). GameFeel lo eleva al cuadrado. Debe ser mayor que el de los botones.")]
     [Range(0f, 1f)] [SerializeField] float completeShake = 0.7f;
     [SerializeField] float completeHitStop = 0.1f;
+    [Tooltip("Sonido al completar la sala (la melodia tipo Zelda).")]
+    [SerializeField] SfxId completeSound = SfxId.PuzzleSolved;
+    [Tooltip("Sonido al abrirse una reja de un Gated Puzzle.")]
+    [SerializeField] SfxId gateSound = SfxId.PuzzleSolved;
     [Tooltip("Segundos de invulnerabilidad (parpadeo blanco) que recibe el jugador al terminar la cinematica de sala " +
              "completada o de reja abierta. 0 = nada.")]
     [SerializeField, Min(0f)] float invulnerabilityAfter = 1.2f;
@@ -153,6 +163,7 @@ public class RoomCompleteCinematic : MonoBehaviour
     {
         running = true;
         var gm = GameManager.Instance;
+        Sfx.Play(completeSound);                       // la melodia de "puzzle resuelto"
 
         yield return Impact(completeShake, completeHitStop);
 
@@ -196,6 +207,7 @@ public class RoomCompleteCinematic : MonoBehaviour
     {
         running = true;
         var gm = GameManager.Instance;
+        Sfx.Play(gateSound);
 
         yield return Impact(gateShake, gateHitStop);
         yield return FocusIn(room, target);
@@ -330,6 +342,7 @@ public class RoomCompleteCinematic : MonoBehaviour
             if (trap == null) continue;
             baseScales[trap] = trap.localScale;
             Vfx.Play(VfxKind.Dust, trap.position, Vector2.up, trapPuffScale);
+            Sfx.Play(SfxId.TrapsOff, trap.position, 0.7f);
             StartCoroutine(Shrink(trap, trap.localScale));
             if (trapStagger > 0f) yield return Wait(trapStagger);
         }

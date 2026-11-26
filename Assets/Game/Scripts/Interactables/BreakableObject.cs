@@ -35,6 +35,8 @@ public class BreakableObject : MonoBehaviour, IHittable, IResettable
 
     void Break()
     {
+        Sfx.Play(SfxId.BreakObject, transform.position);
+        Vfx.Play(VfxKind.Poof, transform.position, Vector2.up, 1f);
         BreakSilently();
         onBroken.Invoke();
     }

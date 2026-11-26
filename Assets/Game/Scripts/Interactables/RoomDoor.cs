@@ -162,6 +162,7 @@ public class RoomDoor : MonoBehaviour, IResettable
         {
             if (juice != null) juice.Play(locked ? "DoorLock" : "DoorUnlock");
             if (dustScale > 0f) Vfx.Play(VfxKind.Dust, transform.position, Vector2.up, dustScale);
+            Sfx.Play(locked ? SfxId.DoorClose : SfxId.DoorOpen, transform.position);
         }
 
         shownLocked = locked;
